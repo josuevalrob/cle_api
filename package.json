@@ -2,22 +2,27 @@
   "name": "api",
   "version": "1.0.0",
   "description": "campament L' Estel api to access into mongodb ",
-  "main": "app.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "test",
-    "start": "nodemon ./app.js --exec babel-node -e js"
+    "build": "babel src -d dist",
+    "start": "npm run build && nodemon dist/index.js",
+    "serve": "npm run build && node dist/index.js",
+    "test": "npm run build && mocha --require @babel/register"
   },
   "author": "josue",
   "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "@babel/register": "^7.4.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.17.5"
+  },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
-    "graphql": "^14.5.8"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "nodemon": "^2.0.2"
+    "graphql": "^14.6.0"
   }
 }

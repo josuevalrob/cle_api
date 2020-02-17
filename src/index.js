@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express from 'express'
 import graphqlHTTP from 'express-graphql';
 import schema from './schema'
@@ -18,5 +19,4 @@ app.use('/graphql', graphqlHTTP({
     //graphical. 
     graphiql : true
 }))
-
-app.listen(8000, () => console.log('server on port 8000 ready'))
+app.listen(process.env.PORT, () => console.log(`server on port ${process.env.PORT} ready`))
