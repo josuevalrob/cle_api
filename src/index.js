@@ -1,24 +1,36 @@
+//environment variables
 require('dotenv').config();
 require('./configs/bd.config');
+const port = normalizePort(process.env.PORT);
+//server imports
 import express from 'express'
-import graphqlHTTP from 'express-graphql';
-import schema from './schema'
-
+//routes
+import rootPath from './routes/root.route'
+import graphQlRouter from './routes/graphQl.route'
+//party 🎉
 const app = express()
 
-app.get('/', (req, res) => {
-    res.send('hello world')
-})
+app.use('/', rootPath)
+app.use('/', graphQlRouter)
 
-// resolver
-const root = {hola: ()=> 'hello graphql'};
+app.listen(port, () => console.log(`server on port ${port} ready`))
 
-app.use('/graphql', graphqlHTTP({
-    //schema to use on that url
-    schema, 
-    // resolver
-    rootValue : root,
-    //graphical. 
-    graphiql : true
-}))
-app.listen(process.env.PORT, () => console.log(`server on port ${process.env.PORT} ready`))
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+  
+    if (isNaN(port)) {
+      // named pipe
+      return val;
+    }
+  
+    if (port >= 0) {
+      // port number
+      return port;
+    }
+  
+    return false;
+  }
