@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, {Schema} from 'mongoose'
 import bcrypt from 'bcrypt'
 
 const SALT_WORK_FACTOR = 10
@@ -6,10 +6,10 @@ const FIRST_ADMIN_EMAIL = process.env.FIRST_ADMIN_EMAIL;
 // const URL_PATTERN = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
 const EMAIL_PATTERN = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   role: {
     type: String,
-    enum: ['teacher', 'student', 'admin'],
+    enum: ['teacher', 'student', 'admin', 'sudo'],
     default: 'student'
   },
   email: {
@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', function (next) {
   const user = this;
   if (user.email === FIRST_ADMIN_EMAIL) {
-    user.role = 'admin';
+    user.role = 'sudo';
   }
   if (!user.isModified('password')) { 
     next();
