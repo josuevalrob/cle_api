@@ -1,6 +1,5 @@
 import {Clientes} from '../models/clientes.model'
-import User from '../models/user.model'
-export const resolvers = {
+export const clientResolver = {
     Query: {
         getClientes : (root, {limit, offset}) =>
             Clientes.find({}).limit(limit).skip(offset),
@@ -15,15 +14,6 @@ export const resolvers = {
             ),
     }, 
     Mutation: {
-        createUser: async(root, {name, email, password}) =>{
-            const newUser = await User({
-                email,
-                password,
-                name
-            })
-
-            console.log(newUser)
-        },
         crearCliente : (root, {input}) => {
             const newClient = new Clientes({
                 nombre : input.nombre,

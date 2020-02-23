@@ -10,7 +10,7 @@ const port = normalizePort(process.env.PORT);
 import rootPath from './routes/root.route'
 //types and resolvers. 
 import {typeDefs} from './schema/typeDef'
-import {resolvers} from './resolvers/clientes.resolver'
+import resolvers from './resolvers'
 //party 🎉
 const app = express()
 const server = new ApolloServer({typeDefs, resolvers})

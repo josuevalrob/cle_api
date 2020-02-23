@@ -54,6 +54,6 @@ type Mutation {
     actualizarCliente(input: ClienteInput) : Cliente
     eliminarCliente( id: ID! ) : String,
     #users
-    createUser(name:String, email:String!, password: String!) : String
+    register(name:String, email:String!, password: String!) : String
 }
 
