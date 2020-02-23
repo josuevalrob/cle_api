@@ -40,20 +40,37 @@ input ClienteInput {
     # emails: [EmailInput]!
     email: String!
 
-} 
+}
+""" USER SCHEMA	"""
+type AuthPayload {
+	user: User
+}
+type User {
+	id: ID!
+	rol: TipoCliente
+	email: String!
+  password: String!
+	name: String!
+	lastName: String
+	phone: String
+	Country: String
+	City: String
+	birth: String
+	profilePhoto: String
+}
 """Queryes """
 type Query {
-    getCliente(id:ID) : Cliente
-    getClientes(limit: Int, offset:Int) : [Cliente]
+	getCliente(id:ID) : Cliente
+	getClientes(limit: Int, offset:Int) : [Cliente]
 }
 """ Mutation to create new clients. """
 type Mutation {
-    #Nombre del resolver y el valor que retorna
-    """ xyxz...  """
-    crearCliente(input:ClienteInput): Cliente
-    actualizarCliente(input: ClienteInput) : Cliente
-    eliminarCliente( id: ID! ) : String,
-    #users
-    register(name:String, email:String!, password: String!) : String
+	#Nombre del resolver y el valor que retorna
+	""" xyxz...  """
+	crearCliente(input:ClienteInput): Cliente
+	actualizarCliente(input: ClienteInput) : Cliente
+	eliminarCliente( id: ID! ) : String,
+	#users
+	register(name:String, email:String!, password: String!) : String
+	authenticate(email:String!, password: String!): AuthPayload
 }
-

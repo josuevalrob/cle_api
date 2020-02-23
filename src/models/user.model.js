@@ -23,12 +23,36 @@ const userSchema = new Schema({
     type: String,
     required: [true, 'we need a password'],
     minlength: 3 //? validate
-  }, 
+  },
   name:{
     type:String,
     required: [true, 'give me your name, at least 3 letters'],
     minlength: 3
-  },   
+  },
+  lastName: {
+    type: String,
+    minlength: 3
+  },
+  phone : { 
+    type: String, /*not required by default**/ 
+    validate: {
+        validator: value => {
+            var regex = /^\d{10}$/;
+            return (value == null || !!value.trim()) || regex.test(value)
+        },
+        message: '🙅🏻‍♂️📞 Provided phone number is invalid.'
+    }
+  },
+  Country: {
+    type: String,
+    minlength: 3
+  },
+  City: {
+    type: String,
+    minlength: 3
+  },
+  birth: Date,
+  profilePhoto: String
 }, {
     timestamps: true,
     toJSON: {
@@ -48,8 +72,9 @@ const userSchema = new Schema({
 userSchema.pre('save', function (next) {
   const user = this;
   if (user.email === FIRST_ADMIN_EMAIL) {
-    user.role = 'sudo';
+    user.role = 'sudo'; // super user do
   }
+
   if (!user.isModified('password')) { 
     next();
   } else {

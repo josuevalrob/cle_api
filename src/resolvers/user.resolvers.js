@@ -10,6 +10,13 @@ const Mutation =  {
         }
         const newUser = new User({name, email, password}).save();
         return 'User Created 📬 📪 📭'
+    },
+    authenticate : async (root, {email, password}) => {
+        const existUser  = await User.findOne({email})
+        if (!existUser) {
+            throw new Error ('🙅🏻‍♂️ User not register')
+        }
+        
     }
 }
 
