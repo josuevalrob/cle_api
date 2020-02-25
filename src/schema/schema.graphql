@@ -21,6 +21,12 @@ enum  TipoCliente {
     BASICO
     PREMIUM
 }
+enum Rol {
+    TEACHER
+    STUDENT
+    ADMIN
+    SUDO
+}
 input PedidoInput {
     producto: String
     precio : Int
@@ -46,10 +52,23 @@ type AuthPayload {
 	user: User
 }
 type User {
-	id: ID!
-	rol: TipoCliente
+	id: ID
+	rol: Rol
 	email: String!
-  password: String!
+    password: String!
+	name: String!
+	lastName: String
+	phone: String
+	Country: String
+	City: String
+	birth: String
+	profilePhoto: String
+}
+input UserInput {
+	id: ID
+	rol: Rol
+	email: String!
+    password: String!
 	name: String!
 	lastName: String
 	phone: String
@@ -61,6 +80,7 @@ type User {
 """Queryes """
 type Query {
 	getCliente(id:ID) : Cliente
+    currentUser: User
 	getClientes(limit: Int, offset:Int) : [Cliente]
 }
 """ Mutation to create new clients. """
@@ -71,6 +91,7 @@ type Mutation {
 	actualizarCliente(input: ClienteInput) : Cliente
 	eliminarCliente( id: ID! ) : String,
 	#users
-	register(name:String, email:String!, password: String!) : String
-	authenticate(email:String!, password: String!): AuthPayload
+	signup(input:UserInput) : AuthPayload
+    login(email: String!, password: String!): AuthPayload
+    logout: Boolean
 }

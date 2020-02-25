@@ -1,9 +1,10 @@
-const User = require('../models/user.model');
+import User from './../models/user.model'
 import passport from 'passport';
 import { GraphQLLocalStrategy } from 'graphql-passport';
 
 
 passport.serializeUser((user, next) => {
+	console.log(user, '🙅🏻‍♂️')
   next(null, user.id);
 });
 
@@ -15,6 +16,7 @@ passport.deserializeUser((id, next) => {
 
 passport.use(
 	new GraphQLLocalStrategy((email, password, next) => {
+		console.log(`🎫  ${email} 🚔  👮‍♂`)
 		User.findOne({ email })
 			.then(user => !user
 				? next(null, false, 'Invalid email or password')
@@ -27,3 +29,4 @@ passport.use(
 			.catch(error => next(error))
 	}),
 );
+
