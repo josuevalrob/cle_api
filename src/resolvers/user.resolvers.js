@@ -12,20 +12,21 @@ const Query = {
         ),
 }
 const Mutation =  {
-    signup : async (root, input, context) => {
+    signup : async (root, {input}, context) => {
+        console.log(` hello ${input.email}`)
         const existUser = await context.User.findOne({ email:input.email })
         if (existUser) {
             console.log(existUser)
             throw new Error ('🙅🏻‍♂️ 📫 Email already registered')
         }
-        const userSaved = await context.User.save(newUser);
+        const userSaved = await context.User.save(input);
         if(userSaved) {
             console.log('User Created 📬 📪 📭', userSaved)
-            //* here should be the loggin 
         }
-        const userLogged = userSaved && await context.login(newUser);
+        //* here should be the loggin 
+        const userLogged = userSaved && await context.login(input);
 
-        return userLogged ? { user: newUser } : 'Hubo un error ⛔️';
+        return userLogged ? { user: input } : 'Hubo un error ⛔️';
     },
     login : async (root, {email, password}, context) => {
         const { user } = await context.authenticate('graphql-local', { email, password });
