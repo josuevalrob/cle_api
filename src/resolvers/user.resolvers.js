@@ -39,9 +39,7 @@ const Mutation =  {
     },
     login : async (root, {email, password}, context) => {
         const { user } = await context.authenticate('graphql-local', { email, password });
-        if (!user) {
-            throw new Error ('🙅🏻‍♂️ There was a problem with the user o the password 🛂')
-        }
+        if (!user) throw new Error ('🙅🏻‍♂️ There was a problem with the user o the password 🛂')
         context.login(user); //🎫
         return { user }
     },
@@ -51,3 +49,21 @@ const Mutation =  {
 }
 
 export default {Query, Mutation}
+
+
+/*
+mutation {
+  signup(input:{
+    email: "frank@gmail.com"
+    name: "frank"
+    lastName: "Saeti"
+  	password: "1234"
+  }) {
+    user {
+      email
+      name
+      password
+    }
+  }
+}
+*/
