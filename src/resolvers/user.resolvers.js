@@ -18,13 +18,14 @@ const Mutation =  {
             console.log(existUser)
             throw new Error ('🙅🏻‍♂️ 📫 Email already registered')
         }
+        const userSaved = await context.User.save(newUser);
+        if(userSaved) {
+            console.log('User Created 📬 📪 📭', userSaved)
+            //* here should be the loggin 
+        }
+        const userLogged = userSaved && await context.login(newUser);
 
-        const newUser = await context.User(input).save(fn=>{
-            // context.login(newUser);
-            console.log('newUser! ', fn, '🙅🏻‍♂️')
-        });
-        //* here should be the loggin 
-        return 'User Created 📬 📪 📭'
+        return userLogged ? { user: newUser } : 'Hubo un error ⛔️';
     },
     login : async (root, {email, password}, context) => {
         const { user } = await context.authenticate('graphql-local', { email, password });
