@@ -9,8 +9,8 @@ const EMAIL_PATTERN = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\"
 const userSchema = new Schema({
   role: {
     type: String,
-    enum: ['teacher', 'student', 'admin', 'sudo'],
-    default: 'student'
+    enum: ['patron', 'admin', 'sudo'],
+    default: 'patron'
   },
   email: {
     type: String,

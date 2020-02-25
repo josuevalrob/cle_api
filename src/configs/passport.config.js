@@ -4,7 +4,7 @@ import { GraphQLLocalStrategy } from 'graphql-passport';
 
 
 passport.serializeUser((user, next) => {
-	console.log(user, '🙅🏻‍♂️')
+	console.log(user.id, ' 🔏')
   next(null, user.id);
 });
 
