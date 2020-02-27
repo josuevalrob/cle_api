@@ -53,7 +53,7 @@ app.use('/', rootPath) //maybe i dont need this...
 // app.use('/', graphQlRouter)
 server.applyMiddleware({app}) //connecta Apollo with express
 
-app.listen(port, () => console.log(`Server Ready 🚀 on port ${port}`))
+app.listen(port, () => console.log(`Server Ready 🚀 #${Date.now()}, on port ${port}`))
 
 
 /**

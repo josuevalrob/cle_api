@@ -1,0 +1,56 @@
+type Cliente {
+        id: ID
+        nombre: String
+        apellido: String
+        empresa: String
+        edad: Int
+        tipo: TipoCliente
+        pedidos:[Pedido]
+        # emails: [Email]
+        email: String
+    }
+type Pedido {
+    producto: String
+    precio : Int
+}
+type Email {
+    email : String
+}
+""" Assign the category client """
+enum  TipoCliente {
+    BASICO
+    PREMIUM
+}
+input PedidoInput {
+    producto: String
+    precio : Int
+}
+input EmailInput {
+    email: String
+}
+""" fields for new clients """
+input ClienteInput {
+    id: ID
+    nombre: String!
+    apellido: String
+    empresa: String
+    edad: Int
+    pedidos:[PedidoInput]
+    tipo: TipoCliente
+    # emails: [EmailInput]!
+    email: String!
+
+} 
+"""Query """
+type Query {
+    getCliente(id:ID) : Cliente
+    getClientes(limit: Int, offset:Int) : [Cliente]
+}
+""" Mutation to create new clients. """
+type Mutation {
+    #Nombre del resolver y el valor que retorna
+    """ xyxz...  """
+    crearCliente(input:ClienteInput): Cliente
+    actualizarCliente(input: ClienteInput) : Cliente
+    eliminarCliente( id: ID! ) : String
+}

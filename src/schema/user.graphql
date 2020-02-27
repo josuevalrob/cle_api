@@ -1,0 +1,46 @@
+
+input UserInput {
+	id: ID
+	rol: Rol
+	email: String!
+    password: String!
+	name: String!
+	lastName: String
+	phone: String
+	Country: String
+	City: String
+	birth: String
+	profilePhoto: String
+}
+type User {
+	id: ID
+	rol: Rol
+	email: String!
+    password: String!
+	name: String!
+	lastName: String
+	phone: String
+	Country: String
+	City: String
+	birth: String
+	profilePhoto: String
+}
+enum Rol {
+	TEACHER
+	STUDENT
+	ADMIN
+	SUDO
+}
+type AuthPayload {
+	user: User
+}
+type Mutation {
+	#users
+	signup(input:UserInput) : AuthPayload
+	login(email: String!, password: String!): AuthPayload
+	logout: Boolean
+}
+
+type Query {
+	currentUser: User
+}
