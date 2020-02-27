@@ -37,6 +37,7 @@
     "lodash": "^4.17.15",
     "mongoose": "^5.9.1",
     "passport": "^0.4.1",
+    "passport-google-token": "^0.1.2",
     "uuid": "^7.0.0"
   }
 }
