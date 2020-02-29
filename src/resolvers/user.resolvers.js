@@ -1,16 +1,17 @@
 // import User from '../models/user.model'
 
 const Query = {
-    currentUser: (parent, {id}, context) =>
-        new Promise ((resolve, rejects) =>
-            User.findById(
-                id,
-                (error, User) => error //callback
-                    ? rejects(error)
-                    : resolve(User)
-            )
-        ),
+  currentUser: (parent, {id}, context) =>
+    new Promise ((resolve, rejects) =>
+      User.findById(
+        id,
+        (error, User) => error //callback
+          ? rejects(error)
+          : resolve(User)
+      )
+    ),
 }
+
 const Mutation =  {
     signup : async (root, {input}, context) => {
         console.log('📩 ', input.email)
@@ -49,21 +50,3 @@ const Mutation =  {
 }
 
 export default {Query, Mutation}
-
-
-/*
-mutation {
-  signup(input:{
-    email: "frank@gmail.com"
-    name: "frank"
-    lastName: "Saeti"
-  	password: "1234"
-  }) {
-    user {
-      email
-      name
-      password
-    }
-  }
-}
-*/
