@@ -38,7 +38,7 @@
     "merge-graphql-schemas": "^1.7.6",
     "mongoose": "^5.9.1",
     "passport": "^0.4.1",
-    "passport-google-token": "^0.1.2",
+    "passport-google-oauth": "^2.0.0",
     "uuid": "^7.0.0"
   }
 }

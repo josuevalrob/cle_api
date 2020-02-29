@@ -17,6 +17,7 @@ import {ApolloServer} from 'apollo-server-express';
 const port = normalizePort(process.env.PORT);
 //routes
 import rootPath from './routes/root.route'
+import authRoutes from './routes/auth.routes'
 //types and resolvers. 
 import {typeDefs} from './schema/typeDef'
 import resolvers from './resolvers'
@@ -50,6 +51,7 @@ const server = new ApolloServer({
 })
 
 app.use('/', rootPath) //maybe i dont need this...
+app.use('/auth', authRoutes)
 // app.use('/', graphQlRouter)
 server.applyMiddleware({app}) //connecta Apollo with express
 

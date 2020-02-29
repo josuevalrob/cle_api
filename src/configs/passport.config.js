@@ -1,7 +1,7 @@
 import User from './../models/user.model'
 import passport from 'passport';
 import { GraphQLLocalStrategy } from 'graphql-passport';
-
+import {OAuth2Strategy} from 'passport-google-oauth'
 
 passport.serializeUser((user, next) => {
 	console.log(user.id, ' 🔏')
@@ -16,7 +16,7 @@ passport.deserializeUser((id, next) => {
 
 passport.use(
 	new GraphQLLocalStrategy((email, password, next) => {
-		console.log(`🎫  ${email} 🚔  👮‍♂`)
+		console.log(`🎫 GraphQLLocalStrategy ${email} 🚔  👮‍♂`)
 		User.findOne({ email })
 			.then(user => !user
 				? next(null, false, 'Invalid email or password')
@@ -30,3 +30,25 @@ passport.use(
 	}),
 );
 
+passport.use(
+	new OAuth2Strategy(
+	  {
+		clientID: process.env.GOOGLE_CLIENT_ID,
+		clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+		// callbackURL: `http://localhost:${process.env.PORT}/google/redirect`,
+		callbackURL: '/auth/google/redirect',
+		profileFields: ['id', 'email', 'first_name', 'last_name'],
+	  },
+		async (request, accessToken, refreshToken, profile, done) => {
+			console.log(`🤯 PROFile ${profile}`)
+			try {
+				const { id } = profile
+				const email = profile.emails[0].value
+				let user = await User.findOrCreate(email, id, provider, profile)
+				done(null, user)
+			} catch (e) {
+				done(e)
+			}
+		},
+	)
+);
