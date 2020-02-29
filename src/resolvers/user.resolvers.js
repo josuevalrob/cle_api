@@ -32,9 +32,8 @@ const Mutation =  {
         const userSaved = await newUser.save();
         if(!userSaved) throw new Error ('💽 there was a problem saving the user')
         console.log('User Created 📬 📪 📭', userSaved)
-        const isLogged = await context.login(userSaved);
+        await context.login(userSaved);
         // if(!isLogged) throw new Error ('Wops, there was a problem making the logging')
-        console.log(`user logged ${isLogged}  👮‍♂️ 🚔 `)
         return {user: newUser}
     },
     login : async (root, {email, password}, context) => {
@@ -48,7 +47,7 @@ const Mutation =  {
     }
 }
 
-export default {}
+export default {Query, Mutation}
 
 
 /*
