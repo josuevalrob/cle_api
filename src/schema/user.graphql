@@ -4,7 +4,7 @@ input UserInput {
 	rol: Rol
 	email: String!
     password: String!
-	name: String!
+	firstName: String!
 	lastName: String
 	phone: String
 	Country: String
@@ -17,7 +17,7 @@ type User {
 	rol: Rol
 	email: String!
     password: String!
-	name: String!
+	firstName: String!
 	lastName: String
 	phone: String
 	Country: String
