@@ -3,7 +3,7 @@ input UserInput {
 	id: ID
 	rol: Rol
 	email: String!
-    password: String!
+	password: String!
 	firstName: String!
 	lastName: String
 	phone: String
@@ -16,7 +16,7 @@ type User {
 	id: ID
 	rol: Rol
 	email: String!
-    password: String!
+	password: String!
 	firstName: String!
 	lastName: String
 	phone: String
@@ -26,16 +26,15 @@ type User {
 	profilePhoto: String
 }
 enum Rol {
-	TEACHER
-	STUDENT
-	ADMIN
-	SUDO
+	patron
+	admin
+	sudo
 }
 type AuthPayload {
 	user: User
 }
 type Mutation {
-	#users
+	# expect a user input, with at least email, first name and password
 	signup(input:UserInput) : AuthPayload
 	login(email: String!, password: String!): AuthPayload
 	logout: Boolean

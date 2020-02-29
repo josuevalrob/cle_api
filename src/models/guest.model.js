@@ -1,10 +1,18 @@
 import mongoose from 'mongoose'
-const clientesSchema = new mongoose.Schema({
-    name : String,
-    apellido: String,
-    email: String,
-    tipo: String,
-    pedidos: Array 
+import EMAIL_PATTERN from './user.model'
+const guestSchema = new mongoose.Schema({
+	firstName:{
+    type:String,
+    required: [true, 'give me your name, at least 3 letters'],
+    minlength: 3
+  },
+	email: {
+		type: String,
+		required: [true, 'Email required'],
+		unique: [true, 'email unique'], 
+		trim: true,
+		match: EMAIL_PATTERN
+	},
 })
-const Clientes = mongoose.model('clientes', clientesSchema)
-export {Clientes}
+const Guest = mongoose.model('clientes', guestSchema)
+export {Guest}

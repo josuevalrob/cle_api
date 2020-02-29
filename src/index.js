@@ -41,6 +41,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req, res }) => {
+    console.log(`🏃‍♀️ ${req.user ? req.user.email : '🙅🏻‍♂️'}`)
     return buildContext({ req, res, User })
   },
   playground: {

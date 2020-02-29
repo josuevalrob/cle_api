@@ -1,15 +1,20 @@
 // import User from '../models/user.model'
 
 const Query = {
-  currentUser: (parent, {id}, context) =>
-    new Promise ((resolve, rejects) =>
-      User.findById(
+  currentUser: (parent, _, context) => {
+    const {id} = context.req.user
+    return new Promise ((resolve, rejects) =>
+      context.User.findById(
         id,
-        (error, User) => error //callback
+        (error, User) => {
+          // console.log(`👤 ${id}`)
+          return error //callback
           ? rejects(error)
           : resolve(User)
+        }
       )
-    ),
+    )
+  },
 }
 
 const Mutation =  {
