@@ -1,22 +1,11 @@
 import {GuestModel} from './../models/guest.model'
 import {destructureUser} from './user.resolvers'
 import {secure} from './../middlewares/secure.mid'
-// import {modelFinderById} from './user.resolvers'
+import {modelFinderById} from './user.resolvers'
+const GuestFindById = modelFinderById(GuestModel)
 const Query = {
 	//TODO protect routes
-	getGuest: secure((parent, {id}, context) => {
-		return new Promise ((resolve, rejects) =>
-			GuestModel.findById(
-				id,
-				(error, User) => {
-					// console.log(`👤 ${id}`)
-					return error //callback
-					? rejects(error)
-					: resolve(User)
-				}
-			)
-		)
-	}),
+	getGuest: secure((parent, {id}, context) => GuestFindById(id)),
 	getGuests: secure((root, {limit, offset}) =>
 		GuestModel.find({}).limit(limit).skip(offset)),
 	getMyGuests: secure((root, {limit, offset}, context) =>
