@@ -1,6 +1,9 @@
 input GuestInput {
 	id: ID
 	letter: String
+    owner: String
+    protected: Boolean
+	rol: Rol
 	email: String!
 	firstName: String!
     status: AccountStatus
@@ -8,6 +11,9 @@ input GuestInput {
 type Guest {
 	id: ID
 	letter: String
+    owner: String
+    protected: Boolean
+	rol: Rol
 	email: String!
 	firstName: String!
     status: AccountStatus
@@ -18,6 +24,11 @@ enum AccountStatus {
     ACCEPTED
     DENIED
     DELETED
+}
+enum Rol {
+	patron
+	admin
+	sudo
 }
 """Query """
 type Query {
@@ -30,4 +41,5 @@ type Mutation {
     createGuest(input: GuestInput): Guest
     updateGuest(input: GuestInput): Guest
     deleteGuest( id: ID! ) : String
+    sendGuest(email: String!, status:AccountStatus): Guest
 }

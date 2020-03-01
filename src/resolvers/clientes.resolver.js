@@ -19,7 +19,6 @@ export const clientResolver = {
                 nombre : input.nombre,
                 apellido: input.apellido,
                 empresa: input.empresa,
-                // emails: input.emails,
                 email: input.email,
                 edad: input.edad,
                 tipo: input.tipo,
