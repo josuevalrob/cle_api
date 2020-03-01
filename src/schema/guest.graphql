@@ -34,6 +34,7 @@ enum Rol {
 type Query {
     getGuest(id:ID) : Guest
     getGuests(limit: Int, offset:Int) : [Guest]
+    getMyGuests(limit: Int, offset:Int) : [Guest]
 }
 """ Mutation to create new clients. """
 type Mutation {

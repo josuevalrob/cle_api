@@ -1,8 +1,10 @@
 import {GuestModel} from './../models/guest.model'
+import {ObjectId} from 'mongoose'
 import {destructureUser} from './user.resolvers'
+import {secure} from './../middlewares/secure.mid'
 const Query = {
 	//TODO protect routes
-	getGuest: (parent, {id}, context) => {
+	getGuest: secure((parent, {id}, context) => {
 		return new Promise ((resolve, rejects) =>
 			GuestModel.findById(
 				id,
@@ -14,9 +16,13 @@ const Query = {
 				}
 			)
 		)
-	},
-	// getGuests:()
-	// getMyGuests:()
+	}),
+	getGuests: secure((root, {limit, offset}) =>
+		GuestModel.find({}).limit(limit).skip(offset)),
+	getMyGuests: secure((root, {limit, offset}, context) =>
+		GuestModel.find({
+			owner: context.req.user.id
+		}).limit(limit).skip(offset)),
 }
 //TODO protect routes
 const Mutation = {
