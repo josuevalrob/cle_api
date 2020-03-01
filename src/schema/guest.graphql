@@ -1,0 +1,33 @@
+input GuestInput {
+	id: ID
+	letter: String
+	email: String!
+	firstName: String!
+    status: AccountStatus
+}
+type Guest {
+	id: ID
+	letter: String
+	email: String!
+	firstName: String!
+    status: AccountStatus
+}
+enum AccountStatus {
+    STANDBY
+    SEND
+    ACCEPTED
+    DENIED
+    DELETED
+}
+"""Query """
+type Query {
+    getGuest(id:ID) : Guest
+    getGuests(limit: Int, offset:Int) : [Guest]
+}
+""" Mutation to create new clients. """
+type Mutation {
+    #Nombre del resolver y el valor que retorna
+    createGuest(input: GuestInput): Guest
+    updateGuest(input: GuestInput): Guest
+    deleteGuest( id: ID! ) : String
+}

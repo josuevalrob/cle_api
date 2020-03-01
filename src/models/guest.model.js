@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
-import EMAIL_PATTERN from './user.model'
+import {EMAIL_PATTERN} from './user.model'
+export const guestStatus = ['STANDBY','SEND', 'ACCEPTED', 'DENIED', 'DELETED']
 const guestSchema = new mongoose.Schema({
 	firstName:{
     type:String,
@@ -13,6 +14,14 @@ const guestSchema = new mongoose.Schema({
 		trim: true,
 		match: EMAIL_PATTERN
 	},
+	letter: String, //TODO set maximum string size
+	status: {
+		type: String,
+		enum: guestStatus,
+		default: guestStatus[0]
+	}
+}, {
+	timestamps: true,
 })
-const Guest = mongoose.model('clientes', guestSchema)
+const Guest = mongoose.model('Guest', guestSchema)
 export {Guest}
