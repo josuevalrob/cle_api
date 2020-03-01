@@ -1,7 +1,8 @@
 // import User from '../models/user.model'
+import {secure} from './../middlewares/secure.mid'
 
 const Query = {
-  currentUser: (parent, _, context) => {
+  currentUser: secure((parent, _, context) => {
     const {id} = context.req.user
     return new Promise ((resolve, rejects) =>
       context.User.findById(
@@ -14,7 +15,7 @@ const Query = {
         }
       )
     )
-  },
+  }),
 }
 
 const Mutation =  {

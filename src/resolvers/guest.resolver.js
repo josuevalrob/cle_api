@@ -1,5 +1,4 @@
 import {GuestModel} from './../models/guest.model'
-import {ObjectId} from 'mongoose'
 import {destructureUser} from './user.resolvers'
 import {secure} from './../middlewares/secure.mid'
 const Query = {
@@ -26,7 +25,7 @@ const Query = {
 }
 //TODO protect routes
 const Mutation = {
-	createGuest : async (root, {input}, context) => {
+	createGuest : secure(async (root, {input}, context) => {
 		const {id, firstName} = context.req.user
 		console.log('preparint to save 💽...', input.email + ' by ' + firstName)
 		const existUser = await context.User.findOne({email:input.email})
@@ -47,29 +46,32 @@ const Mutation = {
 				else resolve(newGuest)
 			})
 		})
-	},
-	sendGuest : async (root, {email, status}, context) => {
+	}),
+	sendGuest : secure(async (root, {email, status}, context) => {
 		const {id} = context.req.user
 		const guest = await GuestModel.findOne({email})
-		if (guest) throw new Error (`Guest ${email} doesn´t exist, please, create it first`)
-		console.log(guest.protected, guest.owner, id)
+		if (!guest) throw new Error (`Guest ${email} doesn´t exist, please, create it first`)
+		// console.log(guest.owner, id, guest.owner != id)
 		return new Promise (( resolve, reject ) => {
-			return guest.protected && guest.owner !== id
+			return guest.protected && guest.owner != id
 				? reject(`${email} is protected, and is not your user. `)
 				: resolve(sendMailAndUpdateStatus(guest))
 		})
-	},
-	signupGuest : async (root, {input}, context) => {
+	}),
+	signupGuest : async (root, {input, key}, context) => {
     console.log('📩 ', input.email)
-    const guest = await GuestModel.findOne({email:input.email})
+		const guest = await GuestModel.findOne({email:input.email})
+		//? can I extract this?
 		if (!guest) throw new Error (`Sorry ${input.email} is not in our list`)
+		if( guest.id !== key) throw new Error (`Sorry, this access is restricted by url. Please access with the email link`)
+		if(guest.status !== 'SEND') throw new Error (`Hey, what r u doing here?. This accound is not ready yet`)
+	 	guest.status = 'ACCEPTED' //should I remove the collection?. 
 		const newUser = new context.User(destructureUser({...input, ...guest}))
 		//? from here, we can call the save user in the user.resolver
-    const userSaved = await newUser.save();
+    const userSaved = await newUser.save(guest.save());
     if(!userSaved) throw new Error ('💽 there was a problem saving the user')
     console.log('User Created 📬 📪 📭', userSaved)
     await context.login(userSaved);
-    // if(!isLogged) throw new Error ('Wops, there was a problem making the logging')
     return {user: newUser}
   },
 }
@@ -77,7 +79,7 @@ const Mutation = {
 export default {Query, Mutation}
 
 const sendMailAndUpdateStatus = doc => {
-	//* send mail
+	//* send mail with the doc.id as a key. 
 	doc.status = 'SEND'
 	console.log('sendMailAndUpdateStatus 📮')
 	return new Promise ((resolve, reject) => {
