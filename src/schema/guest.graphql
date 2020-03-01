@@ -42,4 +42,5 @@ type Mutation {
     updateGuest(input: GuestInput): Guest
     deleteGuest( id: ID! ) : String
     sendGuest(email: String!, status:AccountStatus): Guest
+    signupGuest(input:UserInput): AuthPayload
 }
