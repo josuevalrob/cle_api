@@ -41,5 +41,8 @@ type Mutation {
 }
 
 type Query {
-	currentUser: User
+	currentUser: User,
+	getUser(id:String): User
+	getUsers(limit: Int, offset:Int) : [User]
+
 }

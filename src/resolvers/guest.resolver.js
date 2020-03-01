@@ -1,6 +1,7 @@
 import {GuestModel} from './../models/guest.model'
 import {destructureUser} from './user.resolvers'
 import {secure} from './../middlewares/secure.mid'
+// import {modelFinderById} from './user.resolvers'
 const Query = {
 	//TODO protect routes
 	getGuest: secure((parent, {id}, context) => {

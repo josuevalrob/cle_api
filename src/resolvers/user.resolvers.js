@@ -1,5 +1,10 @@
-// import User from '../models/user.model'
+import User from '../models/user.model'
 import {secure} from './../middlewares/secure.mid'
+
+const modelFinderById = model => id => new Promise ((resolve, rejects) =>
+  model.findById(id, (err, doc) => err ? rejects(err): resolve(doc)))
+
+const userFindById = modelFinderById(User)
 
 const Query = {
   currentUser: secure((parent, _, context) => {
@@ -16,6 +21,8 @@ const Query = {
       )
     )
   }),
+  getUser: (_, {id}, context) => userFindById(id),
+  getUsers: (_, {limit, offset}) => User.find({}).limit(limit).skip(offset)
 }
 
 const Mutation =  {
@@ -44,7 +51,6 @@ const Mutation =  {
 }
 
 export default {Query, Mutation}
-
 
 export const destructureUser = (input) => ({
   id: input.id,
