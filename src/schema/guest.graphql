@@ -32,16 +32,46 @@ enum Rol {
 }
 """Query """
 type Query {
+    # 👮‍♂️ protected route.
+	# 📬 expect the id of the guest card
+	# 🕵️‍♂️ return the guest card with that id
     getGuest(id:ID) : Guest
+    # 👮‍♂️ protected route.
+	# 📬 Limit of user to show. Offset of user to jump/hide
+	# 🕵️‍♂️ return an array of all the guest
     getGuests(limit: Int, offset:Int) : [Guest]
+    # 👮‍♂️ protected route.
+	# 📬 Limit of user to show. Offset of user to jump/hide
+	# 🕵️‍♂️ return an array of all the guest of the current user logged
     getMyGuests(limit: Int, offset:Int) : [Guest]
 }
 """ Mutation to create new clients. """
 type Mutation {
-    #Nombre del resolver y el valor que retorna
+    # 👮‍♂️ protected route.
+	# 📬 Expect a guest input with at one of these account status: _STANDBY, SEND, ACCEPTED,DENIED, DELETED_ 
+    # or one of these rol _patron, admin, sudo_.
+	# 🕵️‍♂️ return the saved guest
     createGuest(input: GuestInput): Guest
+    # 👮‍♂️ protected route.
+	# 📬 expect the new status and the email to be udated. 
+    # 🚨 this mutation do not send a new email
+	# 🕵️‍♂️ return the saved guest
     updateGuestStatus(status:AccountStatus!, email:String!): Guest
+    # 👮‍♂️ protected route.
+	# 📬 expect the id to find the guest and delete it
+    # 🔏 accesible for admin or super user
+    # 🚨 this mutation do not send a new email
+	# 🕵️‍♂️ return the saved guest
     deleteGuest( id: ID! ) : String
-    sendGuest(email: String!, status:AccountStatus): Guest
+    # 👮‍♂️ protected route.
+	# 📬 expect email of the guest that you wish to send the email
+    # 🚨 this mutation send a new email
+	# 🕵️‍♂️ return the saved guest
+    sendGuest(email: String!): Guest
+	# 👤 unProtected route.
+	# 📬 Expect a guest input with at one of these account status: _STANDBY, SEND, ACCEPTED,DENIED, DELETED_ 
+    # or one of these rol _patron, admin, sudo_.
+    # 🚨 the key is the id of the user who created the guest. 
+	# 🕵️‍♂️ return a new authenticated User
     signupGuest(input:UserInput, key: String): AuthPayload
 }

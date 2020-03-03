@@ -59,17 +59,40 @@ type AuthPayload {
 	user: User
 }
 type Mutation {
-	# expect a user input, with at least email, first name and password
+	# 👤 unProtected route.
+	# 📬 expect a user input, with at least email, first name and password
+	# 🕵️‍♂️ return a new authenticated User
 	signup(input:UserInput) : AuthPayload
+	# 👤 unProtected route.
+	# 📬 expect user email and user password
+	# 🕵️‍♂️ return a new authenticated User
 	login(email: String!, password: String!): AuthPayload
+	# 👤 unProtected route.
+	# 📭 no params needed
+	# 🕵️‍♂️ return undefined
 	logout: Boolean
+	# 👮‍♂️ protected route.
+	# 📬 expect a user input, with at least, first name and password. Never Update the email
+	# 🕵️‍♂️ return a user type including email field
 	updateUser(input:UserUpdate) : UserUpdated
+	# 👮‍♂️ protected route. 
+	# 🔏 accesible for admin or super user
+	# 📬 expect the user id to find it and delete it
+	# 🕵️‍♂️ return a String confirmation
 	deleteUser( id: ID! ) : String
 }
 
 type Query {
+	# 👮‍♂️ protected route.
+	# 📭 no params needed
+	# 🕵️‍♂️ return the current user for this session
 	currentUser: User,
-	getUser(id:String): User
+	# 👮‍♂️ protected route.
+	# 📬 Mongoose Id of the user
+	# 🕵️‍♂️ return the current user for this id
+	getUser(id:String!): User
+	# 👮‍♂️ protected route.
+	# 📬 Limit of user to show. Offset of user to jump/hide
+	# 🕵️‍♂️ return a list of users
 	getUsers(limit: Int, offset:Int) : [User]
-
 }
