@@ -1,5 +1,5 @@
 import User from '../models/user.model'
-import {secure} from './../middlewares/secure.mid'
+import {secure, isOwner} from './../middlewares/secure.mid'
 
 export const modelFinderById = model => id => new Promise ((resolve, rejects) =>
   model.findById(id, (err, doc) => err ? rejects(err): resolve(doc)))
@@ -23,7 +23,6 @@ const Mutation =  {
     if(!userSaved) throw new Error ('💽 there was a problem saving the user')
     console.log('User Created 📬 📪 📭', userSaved)
     await context.login(userSaved);
-    // if(!isLogged) throw new Error ('Wops, there was a problem making the logging')
     return {user: newUser}
   },
   login : async (root, {email, password}, context) => {
@@ -32,9 +31,16 @@ const Mutation =  {
     context.login(user); //🎫
     return { user }
   },
-  logout:(root, {email, password}, context) => {
-    context.logout()
-  }
+  logout: (root, {email, password}, context) => context.logout(),
+
+  updateUser: isOwner(async (root, {input}, context) => {
+    console.log(input)
+    const {user} = context.req
+    Object.assign(user, input);
+    const userSaved = await user.save();
+    if(!userSaved) throw new Error ('💽 there was a problem saving the user')
+    return user
+  }, true, true) //sudo and admin has access.
 }
 
 export default {Query, Mutation}

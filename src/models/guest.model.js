@@ -44,14 +44,14 @@ async (root, {email, status}, context) => {
 	if(!!guest && guest.protected && guest.owner === id){
 		//* await send mail
 		mailSend = true
-		guest.save({status:'SEND'})
+		await guest.save({status:'SEND'})
 	} else if(guest.protected && guest.owner !== id) {
 		//! await send mail
 		throw new Error (`${email} is protected, and is not your user. `)
 	} else if(guest) {
 		//* await send mail
 		mailSend = true
-		guest.save({status:'SEND'})
+		await guest.save({status:'SEND'})
 	} else {
 		throw new Error (`Guest ${email} doesn´t exist, please, create it first`)
 	}
