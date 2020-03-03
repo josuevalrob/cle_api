@@ -21,7 +21,7 @@ const guestSchema = new mongoose.Schema({
 		default: guestStatus[0]
 	},
 	owner: mongoose.ObjectId,
-	protected: {
+	isProtected: {
 		type: Boolean,
 		default: false
 	},
@@ -35,26 +35,3 @@ const guestSchema = new mongoose.Schema({
 })
 const GuestModel = mongoose.model('Guest', guestSchema)
 export {GuestModel}
-
-async (root, {email, status}, context) => {
-	const {id} = context.req.user
-	let mailSend = false
-	const guest = GuestModel.findOne({email})
-	console.log(guest.protected, guest.owner)
-	if(!!guest && guest.protected && guest.owner === id){
-		//* await send mail
-		mailSend = true
-		await guest.save({status:'SEND'})
-	} else if(guest.protected && guest.owner !== id) {
-		//! await send mail
-		throw new Error (`${email} is protected, and is not your user. `)
-	} else if(guest) {
-		//* await send mail
-		mailSend = true
-		await guest.save({status:'SEND'})
-	} else {
-		throw new Error (`Guest ${email} doesn´t exist, please, create it first`)
-	}
-	return mailSend
-	
-}

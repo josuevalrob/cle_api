@@ -2,7 +2,7 @@ input GuestInput {
 	id: ID
 	letter: String
     owner: String
-    protected: Boolean
+    isProtected: Boolean
 	rol: Rol
 	email: String!
 	firstName: String!
@@ -12,7 +12,7 @@ type Guest {
 	id: ID
 	letter: String
     owner: String
-    protected: Boolean
+    isProtected: Boolean
 	rol: Rol
 	email: String!
 	firstName: String!
@@ -40,7 +40,7 @@ type Query {
 type Mutation {
     #Nombre del resolver y el valor que retorna
     createGuest(input: GuestInput): Guest
-    updateGuest(input: GuestInput): Guest
+    updateGuestStatus(status:AccountStatus!, email:String!): Guest
     deleteGuest( id: ID! ) : String
     sendGuest(email: String!, status:AccountStatus): Guest
     signupGuest(input:UserInput, key: String): AuthPayload

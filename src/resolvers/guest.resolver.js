@@ -27,7 +27,7 @@ const Mutation = {
 			letter: input.letter,
 			status: input.status,
 			owner: id,
-			protected: input.protected
+			isProtected: input.isProtected
 		})
 		newGuest.id = newGuest._id
 		return new Promise (( resolve, reject ) => {
@@ -43,13 +43,13 @@ const Mutation = {
 		if (!guest) throw new Error (`Guest ${email} doesn´t exist, please, create it first`)
 		// console.log(guest.owner, id, guest.owner != id)
 		return new Promise (( resolve, reject ) => {
-			return guest.protected && guest.owner != id
-				? reject(`${email} is protected, and is not your user. `)
+			return guest.isProtected && guest.owner != id
+				? reject(`${email} is isProtected, and is not your user. `)
 				: resolve(sendMailAndUpdateStatus(guest))
 		})
 	}),
 	signupGuest : async (root, {input, key}, context) => {
-    console.log('📩 ', input.email)
+		console.log('📩 ', input.email)
 		const guest = await GuestModel.findOne({email:input.email})
 		//? can I extract this?
 		if (!guest) throw new Error (`Sorry ${input.email} is not in our list`)
@@ -58,12 +58,19 @@ const Mutation = {
 	 	guest.status = 'ACCEPTED' //should I remove the collection?. 
 		const newUser = new context.User(destructureUser({...input, ...guest}))
 		//? from here, we can call the save user in the user.resolver
-    const userSaved = await newUser.save(guest.save());
-    if(!userSaved) throw new Error ('💽 there was a problem saving the user')
-    console.log('User Created 📬 📪 📭', userSaved)
-    await context.login(userSaved);
-    return {user: newUser}
-  },
+		const userSaved = await newUser.save(guest.save());
+		if(!userSaved) throw new Error ('💽 there was a problem saving the user')
+		console.log('User Created 📬 📪 📭', userSaved)
+		await context.login(userSaved);
+		return {user: newUser}
+	},
+	updateGuestStatus : secure(async (root, {status, email}, context) => {
+		const guest = await GuestModel.findOne({email})
+		if(!guest) throw new Error (`Guest not found`)
+		guest.status = status
+		await guest.save()
+		return guest
+	})
 }
 
 export default {Query, Mutation}

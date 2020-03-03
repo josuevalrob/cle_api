@@ -1,6 +1,6 @@
 import User from '../models/user.model'
 import {secure, isOwner} from './../middlewares/secure.mid'
-
+import {GuestModel} from './../models/guest.model'
 export const modelFinderById = model => id => new Promise ((resolve, rejects) =>
   model.findById(id, (err, doc) => err ? rejects(err): resolve(doc)))
 
@@ -40,7 +40,34 @@ const Mutation =  {
     const userSaved = await user.save();
     if(!userSaved) throw new Error ('💽 there was a problem saving the user')
     return user
-  }, true, true) //sudo and admin has access.
+  }, true, true), //sudo and admin has access.
+
+  deleteUser : secure(async (root, {id}, context) => {
+    console.log('💀 ', id)
+    const {user} = context.req
+    const condemn = await userFindById(id)
+    const guest = await GuestModel.findOne({email: condemn.email})
+    const {owner, isProtected} = guest
+    console.log(guest)
+    const canDie = isProtected
+      ? owner == user.id || user.rol == 'sudo'
+      : user.rol == 'admin' || user.rol == 'sudo'
+    return canDie
+      ? new Promise ((resolve, rejects) =>
+          condemn.remove(error => error //callback
+              ? rejects(error)
+              : resolve((async () => {
+                  guest.status = 'DELETED'
+                  const updateStatus = await guest.save()
+                  return !!updateStatus 
+                    ? "Se elimino correctamente"
+                    : rejects('Ha ocurrido un problema actualizando el guest')
+                })())
+          )
+        )
+      : "No tienes permisos para eliminar"
+    // const creator = await userFindById(owner)
+  })
 }
 
 export default {Query, Mutation}
