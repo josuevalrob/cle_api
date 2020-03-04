@@ -1,6 +1,7 @@
 import User from '../models/user.model'
 import {secure, isOwner} from './../middlewares/secure.mid'
 import {GuestModel} from './../models/guest.model'
+
 export const modelFinderById = model => id => new Promise ((resolve, rejects) =>
   model.findById(id, (err, doc) => err ? rejects(err): resolve(doc)))
 
