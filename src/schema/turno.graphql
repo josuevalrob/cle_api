@@ -1,0 +1,87 @@
+""" Types """
+type Turno {
+	id:ID!
+	kind: turnKind
+	name: String
+	description: String
+	availableCharges: [String]
+	team: [team]
+	foodOptions: [nameAndLabel]
+	permissions: [nameAndLabel]
+	campingType: [campingType]
+	dateTypes:[dateTypes]
+}
+type team {
+	helperId: ID
+	helperEmail: String
+	charge: String
+}
+type nameAndLabel {
+	label: String
+}
+type campingType {
+	name: String
+	foodOptions: [nameAndLabelInput], 
+	permissions: [nameAndLabelInput]
+}
+type dateTypes {
+	label: String
+	beforeData: String
+	afterData: String
+}
+""" Inputs """
+input TurnoInput {
+	id:ID!
+	kind: turnKind
+	name: String
+	description: String
+	availableCharges: [String]
+	team: [teamInput]
+	foodOptions: [nameAndLabelInput]
+	permissions: [nameAndLabelInput]
+	campingType: [campingTypeInput]
+	dateTypes:[dateTypesInput]
+}
+
+input team {
+	helperId: ID
+	helperEmail: String
+	charge: String
+}
+
+input nameAndLabelInput {
+	label: String
+}
+input campingTypeInput {
+	name: String
+	foodOptions: [nameAndLabelInput], 
+	permissions: [nameAndLabelInput]
+}
+
+input dateTypesInput {
+	label: String
+	beforeData: String
+	afterData: String
+}
+
+enum turnKind {
+	camping
+	convi
+	matri
+	sacerdotes
+	mixta
+	pro'
+}
+
+""" Query """
+
+type Query {
+	getTurno(id:ID!) : Turno
+	getTurnos(limit:Int, offset:Int) : [Turno]
+}
+
+type Mutation {
+	createTurno(input: TurnoInput) : Turno
+	updateTurno(input: TurnoInput) : Turno
+	deleteTurno(id:ID!) : Boolean
+}
