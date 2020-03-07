@@ -42,7 +42,6 @@ const Mutation =  {
     if(!userSaved) throw new Error ('💽 there was a problem saving the user')
     return user
   }, true, true), //sudo and admin has access.
-
   deleteUser : secure(async (root, {id}, context) => {
     console.log('💀 ', id)
     const {user} = context.req

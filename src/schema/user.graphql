@@ -11,6 +11,7 @@ input UserInput {
 	City: String
 	birth: String
 	profilePhoto: String
+	charge: String
 }
 type User {
 	id: ID

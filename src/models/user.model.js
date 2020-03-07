@@ -6,15 +6,7 @@ const FIRST_ADMIN_EMAIL = process.env.FIRST_ADMIN_EMAIL;
 // const URL_PATTERN = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
 export const EMAIL_PATTERN = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 export const USER_ROL = ['patron', 'admin', 'sudo']
-export const emailSchema = new Schema({
-  email: {
-    type: String,
-    required: [true, 'Email required'],
-    unique: [true, 'email unique 🙅🏻‍♂️'], 
-    trim: true,
-    match: EMAIL_PATTERN
-  }
-})
+
 const userSchema = new Schema({
   rol: {
     type: String,
@@ -23,9 +15,16 @@ const userSchema = new Schema({
   },
   charge:{
     type: String,
-    required: () => this.rol === 'admin' // Only required if rol equals 'admin'
+    // Only required if rol equals 'admin'
+    // required: () => this.rol === 'admin',
   },
-  email: emailSchema,
+  email:  {
+    type: String,
+    required: [true, 'Email required'],
+    unique: [true, 'email unique 🙅🏻‍♂️'], 
+    trim: true,
+    match: EMAIL_PATTERN
+  },
   password: {
     type: String,
     required: [true, 'we need a password'],
@@ -81,7 +80,6 @@ userSchema.pre('save', function (next) {
   if (user.email === FIRST_ADMIN_EMAIL) {
     user.role = 'sudo'; // super user do
   }
-
   if (!user.isModified('password')) { 
     next();
   } else {
