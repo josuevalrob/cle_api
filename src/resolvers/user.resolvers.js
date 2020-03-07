@@ -1,5 +1,5 @@
 import User from '../models/user.model'
-import {secure, isOwner} from './../middlewares/secure.mid'
+import {secure, isOwner, isSudo} from './../middlewares/secure.mid'
 import {GuestModel} from './../models/guest.model'
 
 export const modelFinderById = model => id => new Promise ((resolve, rejects) =>
@@ -14,8 +14,8 @@ const Query = {
 }
 
 const Mutation =  {
-  //* just for admin
-  signup : async (root, {input}, context) => {
+  //* just for superadmin
+  signup : isSudo(async (root, {input}, context) => {
     console.log('📩 ', input.email)
     const existUser = await context.User.findOne({email:input.email})
     if (existUser) throw new Error ('🙅🏻‍♂️ 📫 Email already registered')
@@ -25,7 +25,7 @@ const Mutation =  {
     console.log('User Created 📬 📪 📭', userSaved)
     await context.login(userSaved);
     return {user: newUser}
-  },
+  }),
   login : async (root, {email, password}, context) => {
     const { user } = await context.authenticate('graphql-local', { email, password });
     if (!user) throw new Error ('🙅🏻‍♂️ There was a problem with the user o the password 🛂')

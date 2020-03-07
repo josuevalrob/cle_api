@@ -17,6 +17,14 @@ export function secure (func, sudo = false, admin = false, patron =  false) {
 	}
 }
 
+export function isSudo(func) {
+	return (root, args, context) => {
+		if(process.env.FIRST_ADMIN_EMAIL !== args.input.email)
+			throw new ForbiddenError('Protected by Super User')
+		return func(root, args, context)
+	}
+}
+
 export function secureUserOnly (func, userId = 'userId') {
 	return (root, args, context) => {
 		if (!context.user) throw new AuthenticationError('Unauthenticated')
