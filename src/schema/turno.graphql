@@ -1,6 +1,6 @@
 """ Types """
 type Turno {
-	id:ID!
+	id:ID
 	kind: turnKind
 	name: String
 	description: String
@@ -21,8 +21,8 @@ type nameAndLabel {
 }
 type campingType {
 	name: String
-	foodOptions: [nameAndLabelInput], 
-	permissions: [nameAndLabelInput]
+	foodOptions: [nameAndLabel], 
+	permissions: [nameAndLabel]
 }
 type dateTypes {
 	label: String
@@ -43,7 +43,7 @@ input TurnoInput {
 	dateTypes:[dateTypesInput]
 }
 
-input team {
+input teamInput {
 	helperId: ID
 	helperEmail: String
 	charge: String
@@ -70,7 +70,7 @@ enum turnKind {
 	matri
 	sacerdotes
 	mixta
-	pro'
+	pro
 }
 
 """ Query """

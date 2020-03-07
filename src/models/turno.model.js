@@ -1,6 +1,16 @@
 import mongoose, {Schema, mongo} from 'mongoose'
 export const turnKind = ['camping', 'convi', 'matri', 'sacerdotes', 'mixta', 'pro']
-import {emailSchema} from './user.model'
+
+const BooleanLabelSchemas = new Schema({
+	...nameAndLabelSchema,
+	status: Boolean
+});
+
+const nameAndLabelSchema = new Schema({
+	name: { type: String, trim: true, required: true, unique: true },
+	label: { type: String, required: true, maxlength: 20 },
+})
+
 const turnoSchema = new Schema({
 	//* Basic Data.
 	kind: {
@@ -27,7 +37,6 @@ const turnoSchema = new Schema({
 	team: [{
 		//! validate in a turnoSchem.pre() if the mongoose.ObjectId exist.
 		helperId: mongoose.ObjectId,
-		helperEmail: emailSchema,
 		charge: {
 			type: String,
 			//! validate if the charge is already in the availableCharges field
@@ -36,7 +45,7 @@ const turnoSchema = new Schema({
 	}],
 	//* Tipos de turnos. (acampado, montiro, bebé, etc)
 	foodOptions: [nameAndLabelSchema],
-	permissions: [nameAndLabelSchema],
+	// permissions: [nameAndLabelSchema],
 	campingType : [{
 		name: {
 			type: String, 
@@ -45,8 +54,8 @@ const turnoSchema = new Schema({
 			required: [true, 'More than 3, less than 20'],
 		},
 		//configuraciones
-		foodOptions: [BooleanLabelSchemas],
-		permissions: [BooleanLabelSchemas]
+		// foodOptions: [BooleanLabelSchemas],
+		// permissions: [BooleanLabelSchemas]
 	}],
 	//* fechas del campamento. Configuración.
 	dateTypes: [{
@@ -69,16 +78,6 @@ const turnoSchema = new Schema({
 	// }]
 	//* Food Table.
 
-})
-
-BooleanLabelSchemas = new Schema({
-	nameAndLabelSchema,
-	status: Boolean
-});
-
-nameAndLabelSchema = new Schema({
-	name: { type: String, trim: true, required: true, unique: true },
-	label: { type: String, required: true, maxlength: 20 },
 })
 
 const Turno = mongoose.model('Turno', turnoSchema);
