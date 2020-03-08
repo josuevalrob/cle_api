@@ -21,7 +21,7 @@ type nameAndLabel {
 }
 type campingType {
 	name: String
-	foodOptions: [nameAndLabel], 
+	foodOptions: [nameAndLabel],
 	permissions: [nameAndLabel]
 }
 type dateTypes {
@@ -31,7 +31,7 @@ type dateTypes {
 }
 """ Inputs """
 input TurnoInput {
-	id:ID!
+	id:ID
 	kind: turnKind
 	name: String
 	description: String

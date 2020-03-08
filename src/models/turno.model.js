@@ -45,8 +45,8 @@ const turnoSchema = new Schema({
 	}],
 	//* Tipos de turnos. (acampado, montiro, bebé, etc)
 	foodOptions: [nameAndLabelSchema],
-	// permissions: [nameAndLabelSchema],
-	campingType : [{
+	permissions: [nameAndLabelSchema],
+	campingType : [{ //monitor, matrimonio, acampado, etc...
 		name: {
 			type: String, 
 			maxlength: 20, 

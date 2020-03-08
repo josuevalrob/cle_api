@@ -11,19 +11,19 @@ const Query = {
 
 const Mutation = {
 	createTurno: secure((root, {input}) => {
-		const newTurn = new Clientes({
+		const newTurn = new TurnoModel({
 			kind: input.kind,
 			name: input.name,
 			description: input.description,
 			availableCharges: input.availableCharges,
 			team: input.team,
-			foodOptions: input.foodOptions,
-			permissions: input.permissions,
+			foodOptions: setNameFromLabel(input.foodOptions),
+			permissions: setNameFromLabel(input.permissions),
 			campingType: input.campingType,
 			dateTypes: input.dateTypes,
 		})
 		newTurn.id = newTurn._id
-		console.log('📩', newTurn)
+		console.log('📩 ', newTurn)
 		return new Promise (( resolve, reject ) => {
 			return newTurn.save(err => {
 				if(err) reject(err)
@@ -59,4 +59,14 @@ const Mutation = {
 		)
 	})
 }
+
+	const cleanLabel = label => label.split(/\s/).join('')//add more validations
+
+	const setNameFromLabel = arr =>
+		arr.map(obj =>
+			({...obj, name: cleanLabel(obj.label)}))
+
+
+
+
 export default {Query, Mutation}
