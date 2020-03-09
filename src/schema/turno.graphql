@@ -6,8 +6,8 @@ type Turno {
 	description: String
 	availableCharges: [String]
 	team: [team]
-	foodOptions: [nameAndLabel]
-	permissions: [nameAndLabel]
+	foodOptions: [String]
+	permissions: [String]
 	campingType: [campingType]
 	dateTypes:[dateTypes]
 }
@@ -37,8 +37,8 @@ input TurnoInput {
 	description: String
 	availableCharges: [String]
 	team: [teamInput]
-	foodOptions: [nameAndLabelInput]
-	permissions: [nameAndLabelInput]
+	foodOptions: [String]
+	permissions: [String]
 	campingType: [campingTypeInput]
 	dateTypes:[dateTypesInput]
 }
@@ -49,13 +49,14 @@ input teamInput {
 	charge: String
 }
 
-input nameAndLabelInput {
+input labelBoolean {
 	label: String
+	status: Boolean
 }
 input campingTypeInput {
 	name: String
-	foodOptions: [nameAndLabelInput], 
-	permissions: [nameAndLabelInput]
+	foodOptions: [labelBoolean]
+	permissions: [labelBoolean]
 }
 
 input dateTypesInput {

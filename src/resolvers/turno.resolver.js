@@ -17,9 +17,9 @@ const Mutation = {
 			description: input.description,
 			availableCharges: input.availableCharges,
 			team: input.team,
-			foodOptions: setNameFromLabel(input.foodOptions),
-			permissions: setNameFromLabel(input.permissions),
-			campingType: input.campingType,
+			foodOptions: input.foodOptions,
+			permissions: input.permissions,
+			campingType: validateCampingType(input),
 			dateTypes: input.dateTypes,
 		})
 		newTurn.id = newTurn._id
@@ -60,13 +60,19 @@ const Mutation = {
 	})
 }
 
-	const cleanLabel = label => label.split(/\s/).join('')//add more validations
-
-	const setNameFromLabel = arr =>
-		arr.map(obj =>
-			({...obj, name: cleanLabel(obj.label)}))
-
-
-
-
 export default {Query, Mutation}
+
+
+const validateCampingType = ({foodOptions, permissions, campingType = []}) => {
+	const labelMatcher = matcher('label')
+	return campingType.map(profile => ({
+		...profile, //here comes name props, any any other in the future
+		foodOptions: labelMatcher(foodOptions)(profile.foodOptions),
+		permissions: labelMatcher(permissions)(profile.permissions)
+	}))
+}
+
+const matcher = key => haystack => needle => haystack.map(label => ({
+	label,
+	status: true
+}))
