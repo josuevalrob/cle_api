@@ -16,13 +16,14 @@ type team {
 	helperEmail: String
 	charge: String
 }
-type nameAndLabel {
+type booleanLabel {
 	label: String
+	status: Boolean
 }
 type campingType {
 	name: String
-	foodOptions: [nameAndLabel],
-	permissions: [nameAndLabel]
+	foodOptions: [booleanLabel],
+	permissions: [booleanLabel]
 }
 type dateTypes {
 	label: String

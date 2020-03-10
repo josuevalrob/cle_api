@@ -11,6 +11,8 @@ const Query = {
 
 const Mutation = {
 	createTurno: secure((root, {input}) => {
+		const foodHanlder = labelMatcher(input.foodOptions)
+		const permHanlder = labelMatcher(input.permissions)
 		const newTurn = new TurnoModel({
 			kind: input.kind,
 			name: input.name,
@@ -19,7 +21,7 @@ const Mutation = {
 			team: input.team,
 			foodOptions: input.foodOptions,
 			permissions: input.permissions,
-			campingType: validateCampingType(input),
+			campingType: validateCampingType(input.campingType, foodHanlder, permHanlder),
 			dateTypes: input.dateTypes,
 		})
 		newTurn.id = newTurn._id
@@ -62,33 +64,18 @@ const Mutation = {
 
 export default {Query, Mutation}
 
-
-const validateCampingType = ({foodOptions, permissions, campingType = []}) => {
-	return campingType.map(profile => {
-		console.log('🤯', profile.permissions)
-		return ({
+const validateCampingType = (campingType = [], foodHanlder, permHanlder) =>
+	campingType.map(profile => ({
 		...profile, //here comes name props, any any other in the future
-		// foodOptions: labelMatcher(foodOptions)(profile.foodOptions),
-		foodOptions: !!profile.foodOptions
-			? foodOptions.map(label => ({
-					label,
-					status: profile.foodOptions.reduce((a,b) =>
-						b.label === label ? b.status : a, false)
-				}))
-			: foodOptions.map(label => ({label, status: false})),
-		permissions: !!profile.permissions
-			? permissions.map(label => ({
-					label,
-					status: profile.permissions.reduce((a,b) =>
-						b.label === label ? b.status : a, false)
-				}))
-			: permissions.map(label => ({label, status: false}))
-	})})
-}
+		foodOptions: foodHanlder(profile.foodOptions),
+		permissions: permHanlder(profile.permissions),
+	}))
 
-const matcher = haystack => needle => !!needle
-	?	haystack.map(label => ({
-			label,
-			status: needle.reduce((a,b) => b[key] === key ? b.status : a, false),
+const matcher = key => haystack => needle => !!needle
+	?	haystack.map(value => ({
+			[key]: value,
+			status: needle.reduce((a,b) => b[key] === value ? b.status : a, false),
 		}))
-	: haystack.map(label => ({label, status: false}))
+	: haystack.map(value => ({[key]: value, status: false}))
+
+const labelMatcher = matcher('label')

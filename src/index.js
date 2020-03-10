@@ -5,7 +5,7 @@ require('./configs/bd.config');
 import User from './models/user.model'
 // 👮🏻‍🚔 passport access
 import passport from 'passport';
-import { buildContext, GraphQLLocalStrategy } from 'graphql-passport';
+import { buildContext } from 'graphql-passport';
 require('./configs/passport.config');
 //🎟 Import session tracker
 import session from 'express-session';
@@ -41,7 +41,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req, res }) => {
-    if(req.user) console.log(`🏃‍♀️ ${req.user ? req.user.email : '🙅🏻‍♂️'}`)
+    // if(req.user) console.log(`🏃‍♀️ ${req.user ? req.user.email : '🙅🏻‍♂️'}`)
     return buildContext({ req, res, User })
   },
   playground: {
