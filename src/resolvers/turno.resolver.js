@@ -23,7 +23,7 @@ const Mutation = {
 			dateTypes: input.dateTypes,
 		})
 		newTurn.id = newTurn._id
-		console.log('📩 ', newTurn)
+		// console.log('📩 ', newTurn)
 		return new Promise (( resolve, reject ) => {
 			return newTurn.save(err => {
 				if(err) reject(err)
@@ -64,15 +64,31 @@ export default {Query, Mutation}
 
 
 const validateCampingType = ({foodOptions, permissions, campingType = []}) => {
-	const labelMatcher = matcher('label')
-	return campingType.map(profile => ({
+	return campingType.map(profile => {
+		console.log('🤯', profile.permissions)
+		return ({
 		...profile, //here comes name props, any any other in the future
-		foodOptions: labelMatcher(foodOptions)(profile.foodOptions),
-		permissions: labelMatcher(permissions)(profile.permissions)
-	}))
+		// foodOptions: labelMatcher(foodOptions)(profile.foodOptions),
+		foodOptions: !!profile.foodOptions
+			? foodOptions.map(label => ({
+					label,
+					status: profile.foodOptions.reduce((a,b) =>
+						b.label === label ? b.status : a, false)
+				}))
+			: foodOptions.map(label => ({label, status: false})),
+		permissions: !!profile.permissions
+			? permissions.map(label => ({
+					label,
+					status: profile.permissions.reduce((a,b) =>
+						b.label === label ? b.status : a, false)
+				}))
+			: permissions.map(label => ({label, status: false}))
+	})})
 }
 
-const matcher = key => haystack => needle => haystack.map(label => ({
-	label,
-	status: true
-}))
+const matcher = haystack => needle => !!needle
+	?	haystack.map(label => ({
+			label,
+			status: needle.reduce((a,b) => b[key] === key ? b.status : a, false),
+		}))
+	: haystack.map(label => ({label, status: false}))
