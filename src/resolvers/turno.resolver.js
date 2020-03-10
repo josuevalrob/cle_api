@@ -14,15 +14,8 @@ const Mutation = {
 		const foodHanlder = labelMatcher(input.foodOptions)
 		const permHanlder = labelMatcher(input.permissions)
 		const newTurn = new TurnoModel({
-			kind: input.kind,
-			name: input.name,
-			description: input.description,
-			availableCharges: input.availableCharges,
-			team: input.team,
-			foodOptions: input.foodOptions,
-			permissions: input.permissions,
+			...input, //extract each field that requires to be handled
 			campingType: validateCampingType(input.campingType, foodHanlder, permHanlder),
-			dateTypes: input.dateTypes,
 		})
 		newTurn.id = newTurn._id
 		return new Promise (( resolve, reject ) => {
@@ -39,11 +32,11 @@ const Mutation = {
 				{_id : input.id} ,
 				input, // new data! 
 				{new:true, useFindAndModify:false}, //si el registro no existe, crea uno nuevo
-				(error, cliente) => error //callback
+				(error, turno) => error //callback
 					? rejects(error)
 					: (()=>{
-						console.log('🏠', cliente)
-						resolve(cliente)
+						// console.log('🏠', turno)
+						resolve(turno)
 					})()
 			)
 		)
