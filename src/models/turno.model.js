@@ -55,7 +55,7 @@ const turnoSchema = new Schema({
 	dateTypes: [{
 		label: { type: String, required: true, maxlength: 20 },
 		beforeDate: String,
-		adterDate: String
+		afterDate: String
 	}],
 	//* Fecha input:
 	// dates: [{

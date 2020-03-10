@@ -27,8 +27,8 @@ type campingType {
 }
 type dateTypes {
 	label: String
-	beforeData: String
-	afterData: String
+	beforeDate: String
+	afterDate: String
 }
 """ Inputs """
 input TurnoInput {
@@ -62,8 +62,8 @@ input campingTypeInput {
 
 input dateTypesInput {
 	label: String
-	beforeData: String
-	afterData: String
+	beforeDate: String
+	afterDate: String
 }
 
 enum turnKind {

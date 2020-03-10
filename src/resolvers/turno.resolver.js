@@ -25,7 +25,6 @@ const Mutation = {
 			dateTypes: input.dateTypes,
 		})
 		newTurn.id = newTurn._id
-		// console.log('📩 ', newTurn)
 		return new Promise (( resolve, reject ) => {
 			return newTurn.save(err => {
 				if(err) reject(err)
