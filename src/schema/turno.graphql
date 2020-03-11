@@ -85,5 +85,5 @@ type Query {
 type Mutation {
 	createTurno(input: TurnoInput) : Turno
 	updateTurno(input: TurnoInput) : Turno
-	deleteTurno(id:ID!) : Boolean
+	deleteTurno(id:ID!) : String
 }
