@@ -1,20 +1,32 @@
 """ Types """
 type Turno {
+	# mongoose id of the turno
 	id:ID
+	# This is a tag for clasiffy your turn
 	kind: turnKind
+	# The name is just informative, it can be duplicated
 	name: String
+	# Description of your turn. it is just informative
 	description: String
+	# the available charge will be tags for your collaborators
 	availableCharges: [String]
+	# each team member has an specific charge,
+	# from the availableCharge array
 	team: [team]
+	# the food option and permissions, are arrays
+	# and works as tags for clasify the campingType
 	foodOptions: [String]
 	permissions: [String]
+	# the camping type is the kind of product that will
+	# be adquired by the patreon
 	campingType: [campingType]
+	# here you can define some kind of dates, like starting or ending dates
 	dateTypes:[dateTypes]
 }
 type team {
 	helperId: ID
-	helperEmail: String
 	charge: String
+	# User: User
 }
 type booleanLabel {
 	label: String

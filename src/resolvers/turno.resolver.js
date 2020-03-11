@@ -3,8 +3,11 @@ import {secure} from './../middlewares/secure.mid'
 import {modelFinderById} from './user.resolvers'
 
 const Query = {
-	getTurno: secure((_, {id}, context) =>
-		modelFinderById(TurnoModel)(id)),
+	getTurno: secure(async (_, {id}, context) => {
+		const turno = await modelFinderById(TurnoModel)(id)
+		console.log(turno)
+		return turno
+	}),
 	getTurnos: secure((_, {limit, offset}) =>
 		TurnoModel.find({}).limit(limit).skip(offset))
 }
