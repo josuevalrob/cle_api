@@ -4,7 +4,6 @@ import {secure} from './../middlewares/secure.mid'
 import {modelFinderById} from './user.resolvers'
 const GuestFindById = modelFinderById(GuestModel)
 const Query = {
-	//TODO protect routes
 	getGuest: secure((parent, {id}, context) => GuestFindById(id)),
 	getGuests: secure((root, {limit, offset}) =>
 		GuestModel.find({}).limit(limit).skip(offset)),
@@ -13,7 +12,6 @@ const Query = {
 			owner: context.req.user.id
 		}).limit(limit).skip(offset)),
 }
-//TODO protect routes
 const Mutation = {
 	createGuest : secure(async (root, {input}, context) => {
 		const {id, firstName} = context.req.user

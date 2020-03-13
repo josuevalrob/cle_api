@@ -13,12 +13,7 @@ const userSchema = new Schema({
     enum: USER_ROL,
     default: 'patron'
   },
-  charge:{
-    type: String,
-    // Only required if rol equals 'admin'
-    // required: () => this.rol === 'admin',
-  },
-  email:  {
+  email: {
     type: String,
     required: [true, 'Email required'],
     unique: [true, 'email unique 🙅🏻‍♂️'], 

@@ -6,6 +6,8 @@ type Turno {
 	kind: turnKind
 	# The name is just informative, it can be duplicated
 	name: String
+	# creator of the turn
+	owner: User
 	# Description of your turn. it is just informative
 	description: String
 	# the available charge will be tags for your collaborators
@@ -24,9 +26,8 @@ type Turno {
 	dateTypes:[dateTypes]
 }
 type team {
-	helperId: ID
+	user: User
 	charge: String
-	# User: User
 }
 type booleanLabel {
 	label: String
@@ -57,8 +58,7 @@ input TurnoInput {
 }
 
 input teamInput {
-	helperId: ID
-	helperEmail: String
+	user: ID
 	charge: String
 }
 

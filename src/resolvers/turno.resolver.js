@@ -1,32 +1,56 @@
-import TurnoModel from './../models/turno.model'
+import TurnoModel, { turnKind } from './../models/turno.model'
 import {secure} from './../middlewares/secure.mid'
-import {modelFinderById} from './user.resolvers'
 
 const Query = {
-	getTurno: secure(async (_, {id}, context) => {
-		const turno = await modelFinderById(TurnoModel)(id)
-		console.log(turno)
-		return turno
-	}),
-	getTurnos: secure((_, {limit, offset}) =>
-		TurnoModel.find({}).limit(limit).skip(offset))
+	getTurno: secure( (_, {id}, context) =>
+		new Promise((resolve, reject) =>
+		 	TurnoModel
+				.findById(id)
+				.populate('owner')
+				.populate('team.user')
+				.then((turno, err) => {
+					if(err) reject(err)
+					else resolve(turno)
+				}
+			)
+		)
+	),
+	getTurnos: secure( (_, {id}, context) =>
+		new Promise((resolve, reject) =>
+			TurnoModel
+				.find({})
+				.populate('owner')
+				.populate('team.user')
+				.then((turno, err) => {
+					if(err) reject(err)
+					else resolve(turno)
+				}
+			)
+		)
+	)
 }
 
 const Mutation = {
-	createTurno: secure((root, {input}) => {
+	createTurno: secure((root, {input}, context) => {
 		const foodHanlder = labelMatcher(input.foodOptions)
 		const permHanlder = labelMatcher(input.permissions)
 		const newTurn = new TurnoModel({
 			...input, //extract each field that requires to be handled
+			owner: context.req.user.id,
 			campingType: validateCampingType(input.campingType, foodHanlder, permHanlder),
 		})
 		newTurn.id = newTurn._id
-		return new Promise (( resolve, reject ) => {
-			return newTurn.save(err => {
-				if(err) reject(err)
-				else resolve(newTurn)
-			})
-		})
+		return new Promise (( resolve, reject ) =>
+			newTurn.save(err => !!err
+				? reject(err)
+				: resolve(
+						newTurn
+						.populate('owner')
+						.populate('team.user')
+						.execPopulate()
+					)
+			)
+		)
 	}),
 	updateTurno: secure((root, {input}) => {
 		console.log('😎 ',input)
@@ -37,10 +61,11 @@ const Mutation = {
 				{new:true, useFindAndModify:false}, //si el registro no existe, crea uno nuevo
 				(error, turno) => error //callback
 					? rejects(error)
-					: (()=>{
-						// console.log('🏠', turno)
-						resolve(turno)
-					})()
+					: resolve(turno
+							.populate('owner')
+							.populate('team.user')
+							.execPopulate()
+					)
 			)
 		)
 	}),

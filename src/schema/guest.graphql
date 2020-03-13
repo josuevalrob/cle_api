@@ -71,7 +71,7 @@ type Mutation {
 	# 👤 unProtected route.
 	# 📬 Expect a guest input with at one of these account status: _STANDBY, SEND, ACCEPTED,DENIED, DELETED_ 
     # or one of these rol _patron, admin, sudo_.
-    # 🚨 the key is the id of the user who created the guest. 
+    # 🚨 the key is the id of the guest. 
 	# 🕵️‍♂️ return a new authenticated User
     signupGuest(input:UserInput, key: String): AuthPayload
 }

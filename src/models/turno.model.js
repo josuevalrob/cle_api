@@ -13,6 +13,7 @@ const turnoSchema = new Schema({
 		enum: turnKind,
 		default: turnKind[0]
 	},
+	owner: { type: Schema.Types.ObjectId, ref: 'User' },
 	name: {
 		type:String,
 		required: [true, 'The turn name require at least 3 characters'],
@@ -26,12 +27,10 @@ const turnoSchema = new Schema({
 	},
 	// bannerPhoto: String,
 	//* Teamwork
-	availableCharges: [{
-		type: String
-	}],
+	availableCharges: [{type: String,maxlength: 10, minlength: 3,}],
 	team: [{
 		//! validate in a turnoSchem.pre() if the mongoose.ObjectId exist.
-		helperId: mongoose.ObjectId,
+		user: { type: Schema.Types.ObjectId, ref: 'User' },
 		charge: {
 			type: String,
 			//! validate if the charge is already in the availableCharges field
