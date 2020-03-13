@@ -31,8 +31,7 @@ const turnoSchema = new Schema({
 	team: [{
 		//! validate in a turnoSchem.pre() if the mongoose.ObjectId exist.
 		user: { type: Schema.Types.ObjectId, ref: 'User' },
-		charge: {
-			type: String,
+		charge: { type: String, maxlength: 20, minlength: 3,
 			//! validate if the charge is already in the availableCharges field
 			// require : (chr) => this.availableCharges.some(elm => elm === chr)
 		}

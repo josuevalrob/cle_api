@@ -2,43 +2,47 @@
 type Turno {
 	# mongoose id of the turno
 	id:ID
-	# This is a tag for clasiffy your turn
+	# This is a static tag for clasiffy your turn
 	kind: turnKind
 	# The name is just informative, it can be duplicated
 	name: String
-	# creator of the turn
+	# creator of the turn. It is just one person, and can be modify
 	owner: User
 	# Description of your turn. it is just informative
 	description: String
-	# the available charge will be tags for your collaborators
+	# the available charge are tags for your collaborators
+	# they will allows you to gives or restric access to different pages
 	availableCharges: [String]
-	# each team member has an specific charge,
-	# from the availableCharge array
+	# each team member has an specific charge, from the availableCharge array
 	team: [team]
 	# the food option and permissions, are arrays
 	# and works as tags for clasify the campingType
+	# they also wrok for gives or restric access to your campingtypes 
 	foodOptions: [String]
 	permissions: [String]
-	# the camping type is the kind of product that will
-	# be adquired by the patreon
+	# the camping type is the kind of product that will be adquired by the patreon
 	campingType: [campingType]
 	# here you can define some kind of dates, like starting or ending dates
 	dateTypes:[dateTypes]
 }
 type team {
 	user: User
+	#the Team charge is limited, like the available charge to have min 3 and max 20 letters
 	charge: String
 }
 type booleanLabel {
+	#required for informative reasons in the frontend 
 	label: String
 	status: Boolean
 }
 type campingType {
+	# Like: Acampado, Matrimonio, Hijos, etc...
 	name: String
 	foodOptions: [booleanLabel],
 	permissions: [booleanLabel]
 }
 type dateTypes {
+	# Like: Fecha de inicio, fecha final, etc.
 	label: String
 	beforeDate: String
 	afterDate: String
@@ -46,6 +50,8 @@ type dateTypes {
 """ Inputs """
 input TurnoInput {
 	id:ID
+	#it will allows you to change the owner of the turn
+	owner: ID
 	kind: turnKind
 	name: String
 	description: String
@@ -79,23 +85,46 @@ input dateTypesInput {
 }
 
 enum turnKind {
+	# campamentos
 	camping
+	# convivencias
 	convi
+	# convivencia de matrimonio		
 	matri
+	# convivencia de sacerdotes
 	sacerdotes
+	#convivencia mixta
 	mixta
+	# 🤷‍♂️
 	pro
 }
 
 """ Query """
 
 type Query {
+	# 👮‍♂️ protected route.
+	# 📬 expect the id of the Turno card
+	# 🕵️‍♂️ return the Turno card with that id
 	getTurno(id:ID!) : Turno
+	# 👮‍♂️ protected route.
+	# 📬 Limit of user to show. Offset of user to jump/hide
+	# 🕵️‍♂️ return an array of all the turnos
 	getTurnos(limit:Int, offset:Int) : [Turno]
 }
 
 type Mutation {
+	# 👮‍♂️ protected route.
+	# 📬 Expect a Turno input with at one of these account status: _STANDBY, SEND, ACCEPTED,DENIED, DELETED_ 
+	# or one of these rol _patron, admin, sudo_.
+	# 🕵️‍♂️ return the saved Turno
 	createTurno(input: TurnoInput) : Turno
+	# 👮‍♂️ protected route.
+	# 📬 expect the new status and the email to be udated. 
+	# 🕵️‍♂️ return the saved Turno
 	updateTurno(input: TurnoInput) : Turno
+	# 👮‍♂️ protected route.
+	# 📬 expect the id to find the turno and delete it
+	# 🔏 accesible for admin or super user
+	# 🕵️‍♂️ return a string confirmation
 	deleteTurno(id:ID!) : String
 }

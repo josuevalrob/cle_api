@@ -53,7 +53,6 @@ const Mutation = {
 		)
 	}),
 	updateTurno: secure((root, {input}) => {
-		console.log('😎 ',input)
 		return new Promise ((resolve, object) =>
 			TurnoModel.findOneAndUpdate(
 				{_id : input.id} ,
