@@ -1,4 +1,14 @@
+scalar Date
+
 """ Types """
+type dates {
+	label: String,
+	value: Date
+}
+input datesInput {
+	label: String,
+	value: Date
+}
 type Turno {
 	# mongoose id of the turno
 	id:ID
@@ -24,6 +34,8 @@ type Turno {
 	campingType: [campingType]
 	# here you can define some kind of dates, like starting or ending dates
 	dateTypes:[dateTypes]
+	dates: [dates]
+	nightPrice: Float
 }
 type team {
 	user: User
@@ -61,6 +73,8 @@ input TurnoInput {
 	permissions: [String]
 	campingType: [campingTypeInput]
 	dateTypes:[dateTypesInput]
+	dates: [datesInput]
+	nightPrice: Float
 }
 
 input teamInput {

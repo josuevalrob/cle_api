@@ -32,14 +32,11 @@ const Query = {
 
 const Mutation = {
 	createTurno: secure((root, {input}, context) => {
-		const foodHanlder = labelMatcher(input.foodOptions)
-		const permHanlder = labelMatcher(input.permissions)
-		const newTurn = new TurnoModel({
-			...input, //extract each field that requires to be handled
-			owner: context.req.user.id,
-			campingType: validateCampingType(input.campingType, foodHanlder, permHanlder),
-		})
+		const newTurn = new TurnoModel(turnoInputHandler({
+			...input, owner: context.req.user.id
+		}))
 		newTurn.id = newTurn._id
+		console.log('🏕 ', newTurn)
 		return new Promise (( resolve, reject ) =>
 			newTurn.save(err => !!err
 				? reject(err)
@@ -56,11 +53,12 @@ const Mutation = {
 		return new Promise ((resolve, object) =>
 			TurnoModel.findOneAndUpdate(
 				{_id : input.id} ,
-				input, // new data! 
+				turnoInputHandler(input), // new data!
 				{new:true, useFindAndModify:false}, //si el registro no existe, crea uno nuevo
 				(error, turno) => error //callback
 					? rejects(error)
-					: resolve(turno
+					: resolve(
+							turno
 							.populate('owner')
 							.populate('team.user')
 							.execPopulate()
@@ -90,11 +88,46 @@ const validateCampingType = (campingType = [], foodHanlder, permHanlder) =>
 		permissions: permHanlder(profile.permissions),
 	}))
 
-const matcher = key => haystack => needle => !!needle
+/**
+ * Curried functions for return {[key]:'something', status: true}
+ * returns a function which expect an haystack which expect
+ * a needle to find if  inside that needle is the key, if not, return false.
+ * @param {string} key string to compare with the value
+ */
+const keyStatus = key => haystack => needle => !!needle
 	?	haystack.map(value => ({
 			[key]: value,
 			status: needle.reduce((a,b) => b[key] === value ? b.status : a, false),
 		}))
-	: haystack.map(value => ({[key]: value, status: false}))
+	: haystack.map(value => ({[key]: value, status: false}));
 
-const labelMatcher = matcher('label')
+/**
+ * return a keyStatus curried function setted with a 'label' value
+ * for return {label:'something', status: true}
+ */
+const labelMatcher = keyStatus('label');
+
+/**
+ * Extract each field that requires to be handled
+ * and return the data treated with default values
+ * @param {object} input object.
+ */
+const turnoInputHandler = input => {
+	const {dateTypes, dates=[], foodOptions, permissions} = input
+	const foodHanlder = labelMatcher(foodOptions)
+	const permHanlder = labelMatcher(permissions)
+	return {
+		...input,
+		campingType: validateCampingType(input.campingType, foodHanlder, permHanlder),
+		dates: !Array.isArray(dateTypes) ? [] //create an empty array
+			: dateTypes
+				.map(({label}) => ({ //return an object
+					label,
+					value: dates.reduce((a,b) =>
+						b[key] === value
+							? b.status
+							: a,
+					new Date()),
+				}))
+	}
+}

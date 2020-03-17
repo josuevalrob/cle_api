@@ -1,11 +1,21 @@
-import mongoose, {Schema, mongo} from 'mongoose'
+import mongoose, {Schema} from 'mongoose'
 export const turnKind = ['camping', 'convi', 'matri', 'sacerdotes', 'mixta', 'pro']
-
-const BooleanLabelSchemas = new Schema({
+const foodLabelSchema = new Schema({
 	label:{ type: String, required: true, maxlength: 20 },
-	status: {type:Boolean, default: false}
+	status: {type:Boolean, default: false}, 
+	price:  {
+		type: Number,
+		get: n => n * 100,
+		set: n => (n/100).toFixed(2)
+	}
 });
-
+export const labelAndDateSchema = new Schema({
+	label: { type: String, required: true, maxlength: 20, minlength:3 },
+	value: {
+		type: Date,
+		// require: ()=>			//! check if the beforeDate and afterDate are ok
+	},
+})
 const turnoSchema = new Schema({
 	//* Basic Data.
 	kind: {
@@ -46,28 +56,25 @@ const turnoSchema = new Schema({
 			minlength: 3,
 			required: [true, 'More than 3, less than 20'],
 		},
-		foodOptions: [BooleanLabelSchemas],
-		permissions: [BooleanLabelSchemas]
+		foodOptions: [foodLabelSchema],
+		permissions: [foodLabelSchema],
 	}],
+	nightPrice:  {
+		type: Number,
+		default: 0,
+		get: n => n * 100,
+		set: n => (n/100).toFixed(2)
+	},
 	//* fechas del campamento. Configuración.
 	dateTypes: [{
-		label: { type: String, required: true, maxlength: 20 },
+		label: { type: String, required: true, maxlength: 20, minlength:3 },
+		transportDate:  {type:Boolean, default: false}, //appears in the profile field information
 		beforeDate: String,
-		afterDate: String
+		afterDate: String, 
 	}],
 	//* Fecha input:
-	// dates: [{
-	// 	kind: {
-	// 		type: String,
-	// 		// require: () =>  //! validate if the kind is the same from dateTypes
-	// 	},
-	// 	value: {
-	// 		type: Date,
-	// 		// require: ()=>			//! check if the beforeDate and afterDate are ok
-	// 	},
-	// }]
+	dates: [labelAndDateSchema],
 	//* Food Table.
-
 })
 
 const Turno = mongoose.model('Turno', turnoSchema);
