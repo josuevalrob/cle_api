@@ -32,9 +32,10 @@ const Query = {
 
 const Mutation = {
 	createTurno: secure((root, {input}, context) => {
-		const newTurn = new TurnoModel(turnoInputHandler({
-			...input, owner: context.req.user.id
-		}))
+		const newTurn = new TurnoModel({
+			...input,
+			owner: context.req.user.id,
+		})
 		newTurn.id = newTurn._id
 		console.log('🏕 ', newTurn)
 		return new Promise (( resolve, reject ) =>
@@ -50,10 +51,11 @@ const Mutation = {
 		)
 	}),
 	updateTurno: secure((root, {input}) => {
+		console.log('⛺️ ', input)
 		return new Promise ((resolve, object) =>
 			TurnoModel.findOneAndUpdate(
 				{_id : input.id} ,
-				turnoInputHandler(input), // new data!
+				input, // new data!
 				{new:true, useFindAndModify:false}, //si el registro no existe, crea uno nuevo
 				(error, turno) => error //callback
 					? rejects(error)
@@ -79,7 +81,35 @@ const Mutation = {
 	})
 }
 
+const populateTurno = model => model.populate('owner').populate('team.user').execPopulate()
+
 export default {Query, Mutation}
+/**
+ * Extract each field that requires to be handled
+ * and return the data treated with default values
+ * @param {object} input object.
+ */
+const turnoInputHandler = input => {
+	const {dateTypes, dates=[], foodOptions, permissions} = input
+	const foodHanlder = labelMatcher(foodOptions)
+	const permHanlder = labelMatcher(permissions)
+	return {
+		...input,
+		campingType: validateCampingType(input.campingType, foodHanlder, permHanlder),
+		dates: !Array.isArray(dateTypes) ? [] //create an empty array
+			: dateTypes
+				.map(({label}) => ({ //return an object
+					label,
+					value: dates.reduce((a,b) =>
+						b[key] === value
+							? b.status
+							: a,
+					new Date()),
+				}))
+	}
+}
+
+
 
 const validateCampingType = (campingType = [], foodHanlder, permHanlder) =>
 	campingType.map(profile => ({
@@ -106,28 +136,3 @@ const keyStatus = key => haystack => needle => !!needle
  * for return {label:'something', status: true}
  */
 const labelMatcher = keyStatus('label');
-
-/**
- * Extract each field that requires to be handled
- * and return the data treated with default values
- * @param {object} input object.
- */
-const turnoInputHandler = input => {
-	const {dateTypes, dates=[], foodOptions, permissions} = input
-	const foodHanlder = labelMatcher(foodOptions)
-	const permHanlder = labelMatcher(permissions)
-	return {
-		...input,
-		campingType: validateCampingType(input.campingType, foodHanlder, permHanlder),
-		dates: !Array.isArray(dateTypes) ? [] //create an empty array
-			: dateTypes
-				.map(({label}) => ({ //return an object
-					label,
-					value: dates.reduce((a,b) =>
-						b[key] === value
-							? b.status
-							: a,
-					new Date()),
-				}))
-	}
-}

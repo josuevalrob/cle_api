@@ -11,10 +11,10 @@ const foodLabelSchema = new Schema({
 });
 export const labelAndDateSchema = new Schema({
 	label: { type: String, required: true, maxlength: 20, minlength:3 },
-	value: {
-		type: Date,
-		// require: ()=>			//! check if the beforeDate and afterDate are ok
-	},
+	value: { type: Date, default: new Date() },
+	transportDate:  {type:Boolean, default: false}, //appears in the profile field information
+	beforeDate: String,
+	afterDate: String,
 })
 const turnoSchema = new Schema({
 	//* Basic Data.
@@ -47,8 +47,6 @@ const turnoSchema = new Schema({
 		}
 	}],
 	//* Tipos de turnos. (acampado, montiro, bebé, etc)
-	foodOptions: [{ type: String, required: true, maxlength: 20 }],
-	permissions: [{ type: String, required: true, maxlength: 20 }],
 	campingType : [{ //monitor, matrimonio, acampado, etc...
 		name: {
 			type: String,
@@ -65,13 +63,6 @@ const turnoSchema = new Schema({
 		get: n => n * 100,
 		set: n => (n/100).toFixed(2)
 	},
-	//* fechas del campamento. Configuración.
-	dateTypes: [{
-		label: { type: String, required: true, maxlength: 20, minlength:3 },
-		transportDate:  {type:Boolean, default: false}, //appears in the profile field information
-		beforeDate: String,
-		afterDate: String, 
-	}],
 	//* Fecha input:
 	dates: [labelAndDateSchema],
 	//* Food Table.

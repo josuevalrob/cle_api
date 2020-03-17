@@ -3,11 +3,17 @@ scalar Date
 """ Types """
 type dates {
 	label: String,
-	value: Date
+	value: Date,
+	transportDate: Boolean
+	beforeDate: String
+	afterDate: String
 }
 input datesInput {
 	label: String,
-	value: Date
+	value: Date,
+	transportDate: Boolean
+	beforeDate: String
+	afterDate: String
 }
 type Turno {
 	# mongoose id of the turno
@@ -25,16 +31,11 @@ type Turno {
 	availableCharges: [String]
 	# each team member has an specific charge, from the availableCharge array
 	team: [team]
-	# the food option and permissions, are arrays
-	# and works as tags for clasify the campingType
-	# they also wrok for gives or restric access to your campingtypes 
-	foodOptions: [String]
-	permissions: [String]
 	# the camping type is the kind of product that will be adquired by the patreon
 	campingType: [campingType]
 	# here you can define some kind of dates, like starting or ending dates
-	dateTypes:[dateTypes]
 	dates: [dates]
+	# price for each day spend in the camp
 	nightPrice: Float
 }
 type team {
@@ -50,6 +51,9 @@ type booleanLabel {
 type campingType {
 	# Like: Acampado, Matrimonio, Hijos, etc...
 	name: String
+	# the food option and permissions, are arrays
+	# and works as tags for clasify the campingType
+	# they also work for gives or restric access to your campingtypes 
 	foodOptions: [booleanLabel],
 	permissions: [booleanLabel]
 }
@@ -69,10 +73,7 @@ input TurnoInput {
 	description: String
 	availableCharges: [String]
 	team: [teamInput]
-	foodOptions: [String]
-	permissions: [String]
 	campingType: [campingTypeInput]
-	dateTypes:[dateTypesInput]
 	dates: [datesInput]
 	nightPrice: Float
 }
@@ -92,18 +93,12 @@ input campingTypeInput {
 	permissions: [labelBoolean]
 }
 
-input dateTypesInput {
-	label: String
-	beforeDate: String
-	afterDate: String
-}
-
 enum turnKind {
 	# campamentos
 	camping
 	# convivencias
 	convi
-	# convivencia de matrimonio		
+	# convivencia de matrimonio
 	matri
 	# convivencia de sacerdotes
 	sacerdotes
