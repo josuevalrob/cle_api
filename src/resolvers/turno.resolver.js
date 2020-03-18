@@ -1,5 +1,6 @@
 import TurnoModel, { turnKind } from './../models/turno.model'
 import {secure} from './../middlewares/secure.mid'
+import {merge, mergeWith, isPlainObject, isArray, has} from 'lodash'
 
 const Query = {
 	getTurno: secure( (_, {id}, context) =>
@@ -51,7 +52,6 @@ const Mutation = {
 		)
 	}),
 	updateTurno: secure((root, {input}) => {
-		console.log('⛺️ ', input)
 		return new Promise ((resolve, object) =>
 			TurnoModel.findOneAndUpdate(
 				{_id : input.id} ,
@@ -68,6 +68,26 @@ const Mutation = {
 			)
 		)
 	}),
+	// updateTurno: secure((_, {input} ) => {
+	// 	return new Promise((resolve, reject) =>
+	// 		TurnoModel.findById(input.id)
+	// 			.then((turno, err) => {
+	// 				if(err) reject(err)
+	// 				console.log('⛺️ ', turno)
+	// 				console.log('🏕 ', input)
+	// 				const newTurno = merge(turno, input)
+	// 				newTurno.save((err) => {
+	// 					if(err) reject(err)
+	// 					console.log('🔥 ',newTurno)
+	// 					resolve(newTurno
+	// 									.populate('owner')
+	// 									.populate('team.user')
+	// 									.execPopulate())
+	// 				});
+	// 			}
+	// 		)
+	// 	)
+	// }),
 	deleteTurno: secure((root, {id}) => {
 		console.log('💀 ',id)
 		return new Promise ((resolve, object) =>
@@ -81,58 +101,4 @@ const Mutation = {
 	})
 }
 
-const populateTurno = model => model.populate('owner').populate('team.user').execPopulate()
-
 export default {Query, Mutation}
-/**
- * Extract each field that requires to be handled
- * and return the data treated with default values
- * @param {object} input object.
- */
-const turnoInputHandler = input => {
-	const {dateTypes, dates=[], foodOptions, permissions} = input
-	const foodHanlder = labelMatcher(foodOptions)
-	const permHanlder = labelMatcher(permissions)
-	return {
-		...input,
-		campingType: validateCampingType(input.campingType, foodHanlder, permHanlder),
-		dates: !Array.isArray(dateTypes) ? [] //create an empty array
-			: dateTypes
-				.map(({label}) => ({ //return an object
-					label,
-					value: dates.reduce((a,b) =>
-						b[key] === value
-							? b.status
-							: a,
-					new Date()),
-				}))
-	}
-}
-
-
-
-const validateCampingType = (campingType = [], foodHanlder, permHanlder) =>
-	campingType.map(profile => ({
-		...profile, //here comes name props, any any other in the future
-		foodOptions: foodHanlder(profile.foodOptions),
-		permissions: permHanlder(profile.permissions),
-	}))
-
-/**
- * Curried functions for return {[key]:'something', status: true}
- * returns a function which expect an haystack which expect
- * a needle to find if  inside that needle is the key, if not, return false.
- * @param {string} key string to compare with the value
- */
-const keyStatus = key => haystack => needle => !!needle
-	?	haystack.map(value => ({
-			[key]: value,
-			status: needle.reduce((a,b) => b[key] === value ? b.status : a, false),
-		}))
-	: haystack.map(value => ({[key]: value, status: false}));
-
-/**
- * return a keyStatus curried function setted with a 'label' value
- * for return {label:'something', status: true}
- */
-const labelMatcher = keyStatus('label');

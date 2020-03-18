@@ -16,6 +16,18 @@ export const labelAndDateSchema = new Schema({
 	beforeDate: String,
 	afterDate: String,
 })
+
+const campingTypeSchema = new Schema({ //monitor, matrimonio, acampado, etc...
+	name: {
+		type: String,
+		maxlength: 20,
+		minlength: 3,
+		required: [true, 'More than 3, less than 20'],
+	},
+	foodOptions: [foodLabelSchema],
+	permissions: [foodLabelSchema],
+})
+
 const turnoSchema = new Schema({
 	//* Basic Data.
 	kind: {
@@ -47,16 +59,7 @@ const turnoSchema = new Schema({
 		}
 	}],
 	//* Tipos de turnos. (acampado, montiro, bebé, etc)
-	campingType : [{ //monitor, matrimonio, acampado, etc...
-		name: {
-			type: String,
-			maxlength: 20,
-			minlength: 3,
-			required: [true, 'More than 3, less than 20'],
-		},
-		foodOptions: [foodLabelSchema],
-		permissions: [foodLabelSchema],
-	}],
+	campingType : [campingTypeSchema],
 	nightPrice:  {
 		type: Number,
 		default: 0,

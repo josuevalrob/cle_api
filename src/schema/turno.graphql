@@ -70,12 +70,12 @@ input TurnoInput {
 	owner: ID
 	kind: turnKind
 	name: String
+	nightPrice: Float
 	description: String
 	availableCharges: [String]
 	team: [teamInput]
 	campingType: [campingTypeInput]
 	dates: [datesInput]
-	nightPrice: Float
 }
 
 input teamInput {
