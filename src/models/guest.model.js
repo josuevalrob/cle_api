@@ -28,8 +28,9 @@ const guestSchema = new mongoose.Schema({
 	rol: {
     type: String,
     enum: USER_ROL,
-    default: 'patron'
-  },
+    default: USER_ROL[0]
+	},
+	
 }, {
 	timestamps: true,
 })

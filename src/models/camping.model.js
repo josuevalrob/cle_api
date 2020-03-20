@@ -1,33 +1,6 @@
 import {Schema, model} from 'mongoose'
+import {EMAIL_PATTERN} from './user.model'
 import {labelAndDateSchema} from './turno.model'
-
-const CampingSchema = new Schema({
-  //where does this camping belongs.
-  turno: { type: Schema.Types.ObjectId, ref: 'Turno', unique:true},
-  // invitation to
-  // ? what about if the guest is already a user??
-  guest: { type: Schema.Types.ObjectId, ref: 'Guest', unique:true },
-  // confirmation from
-  patron: { type: Schema.Types.ObjectId, ref: 'User', unique:true },
-  // CampingType
-  //? how to handle multiple guest invitation, if there is just one patreon reference
-  //* with the campingProfileSchema array
-  profile : [campingProfileSchema]
-})
-
-const campingProfileSchema = new newSchema({
-  basicData: basicDataSchema,
-  contactData: basicDataSchema,
-  transporte: [labelAndDateSchema],
-  scheduleFood: [{
-    //* this data will be multiply by the nightPrice and the food price
-    //* to get the day price on the bworser.
-    //graphQl will return the available dates.
-    day: Date, //date must be in range. check it in the resolver
-    value: { type: String, required: true, maxlength: 20 }
-  }]
-})
-
 const basicDataSchema = new Schema({
   //! add basic data!
   firstName:{
@@ -45,6 +18,38 @@ const basicDataSchema = new Schema({
   medication: [{ type: String, required: true, maxlength: 20, minlength:3 }],
   curso: { type: String, required: true, maxlength: 20, minlength:3 },
 });
+
+const CampingSchema = new Schema({
+  //where does this camping belongs.
+  turno: { type: Schema.Types.ObjectId, ref: 'Turno', unique:true},
+  // // invitation to
+  // // ? what about if the guest is already a user??
+  guest: { type: Schema.Types.ObjectId, ref: 'Guest', unique:true },
+  // confirmation from
+  patreonEmail: {
+    type: String,
+    required: [true, 'Email required'],
+    trim: true,
+    match: EMAIL_PATTERN
+  },
+  patron: { type: Schema.Types.ObjectId, ref: 'User', unique:true },
+  owner:  { type: Schema.Types.ObjectId, ref: 'User', unique:true },
+  firstName: { type: String, required: true, maxlength: 20, minlength:3 },
+  // CampingType
+  //? how to handle multiple guest invitation, if there is just one patreon reference
+  // // with the campingProfileSchema array
+  //* with multiple guest invitations. No array. each campingSchema belongs to one camping
+  basicData: basicDataSchema,
+  contactData: basicDataSchema,
+  transporte: [labelAndDateSchema],
+  scheduleFood: [{
+    //* this data will be multiply by the nightPrice and the food price
+    //* to get the day price on the bworser.
+    //graphQl will return the available dates.
+    day: Date, //date must be in range. check it in the resolver
+    value: { type: String, required: true, maxlength: 20 }
+  }]
+})
 
 
 const Camping = model('Camping', CampingSchema);

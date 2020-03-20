@@ -5,15 +5,15 @@ type dates {
 	label: String,
 	value: Date,
 	transportDate: Boolean
-	beforeDate: String
-	afterDate: String
+	# beforeDate: String
+	# afterDate: String
 }
 input datesInput {
 	label: String,
 	value: Date,
 	transportDate: Boolean
-	beforeDate: String
-	afterDate: String
+	# beforeDate: String
+	# afterDate: String
 }
 type Turno {
 	# mongoose id of the turno

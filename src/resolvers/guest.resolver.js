@@ -1,4 +1,6 @@
 import {GuestModel} from './../models/guest.model'
+import CampingModel from './../models/camping.model'
+import TurnoModel from './../models/turno.model'
 import {destructureUser} from './user.resolvers'
 import {secure} from './../middlewares/secure.mid'
 import {modelFinderById} from './user.resolvers'
@@ -46,6 +48,7 @@ const Mutation = {
 				: resolve(sendMailAndUpdateStatus(guest))
 		})
 	}),
+	// TODO update guest status!!
 	signupGuest : async (root, {input, key}, context) => {
 		console.log('📩 ', input.email)
 		const guest = await GuestModel.findOne({email:input.email})
@@ -53,12 +56,18 @@ const Mutation = {
 		if (!guest) throw new Error (`Sorry ${input.email} is not in our list`)
 		if( guest.id !== key) throw new Error (`Sorry, this access is restricted by url. Please access with the email link`)
 		if(guest.status !== 'SEND') throw new Error (`Hey, what r u doing here?. This accound is not ready yet`)
-	 	guest.status = 'ACCEPTED' //should I remove the collection?. 
+	 	guest.status = 'ACCEPTED' //should I remove the collection?.
 		const newUser = new context.User(destructureUser({...input, ...guest}))
 		//? from here, we can call the save user in the user.resolver
 		const userSaved = await newUser.save(guest.save());
 		if(!userSaved) throw new Error ('💽 there was a problem saving the user')
 		console.log('User Created 📬 📪 📭', userSaved)
+
+		// * once the user is created we need to find and update all the turns relateds.
+		console.log("let's update the related turn & campings 🏕")
+		const res = await CampingModel.updateMany({patreonEmail:userSaved.email}, {"$set":{"patron": userSaved.id}})
+		console.log(`${res.n} documentes matched and ${res.nModified} modified`)
+
 		await context.login(userSaved);
 		return {user: newUser}
 	},
