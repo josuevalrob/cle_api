@@ -1,0 +1,72 @@
+""" Inputs """
+input CampingProfileInput {
+  firstName: String
+  lastName: String
+  birth: Date
+  profilePhoto: String
+  alergies: [String]
+  medication: [String]
+  curso: String
+}
+
+input CampingInput {
+  turno: ID!
+  # email of the user who is gonna buy the turn
+  patreonEmail: String!
+  firstName: String!
+  basicData: CampingProfileInput
+  contactData: CampingProfileInput
+  transporte: [datesInput]
+}
+""" types """
+type Camping {
+  id: ID
+  turno: Turno
+  owner: User
+  patreon: User
+  guest: Guest
+  firstName: String
+  basicData: CampingProfile
+  contactData: CampingProfile
+  transporte: [dates]
+}
+
+type CampingProfile {
+  firstName: String
+  lastName: String
+  birth: Date
+  profilePhoto: String
+  alergies: [String]
+  medication: [String]
+  curso: String
+}
+
+""" Query """
+
+type Query {
+	# 👮‍♂️ protected route.
+	# 📬 expect the id of the Turno card
+	# 🕵️‍♂️ return the Turno card with that id
+	getCamping(id:ID!) : Camping
+	# 👮‍♂️ protected route.
+	# 📬 Limit of user to show. Offset of user to jump/hide
+	# 🕵️‍♂️ return an array of all the turnos
+	getCampings(turnoId:ID!, limit:Int, offset:Int) : [Camping]
+}
+
+type Mutation {
+	# 👮‍♂️ protected route.
+	# 📬 Expect a Turno input with at one of these account status: _STANDBY, SEND, ACCEPTED,DENIED, DELETED_ 
+	# or one of these rol _patron, admin, sudo_.
+	# 🕵️‍♂️ return the saved Turno
+	createCamping(input: CampingInput) : Camping
+	# 👮‍♂️ protected route.
+	# 📬 expect the new status and the email to be udated. 
+	# 🕵️‍♂️ return the saved Camping
+	updateCamping(input: CampingInput) : Camping
+	# 👮‍♂️ protected route.
+	# 📬 expect the id to find the Camping and delete it
+	# 🔏 accesible for admin or super user
+	# 🕵️‍♂️ return a string confirmation
+	deleteCamping(id:ID!) : String
+}
