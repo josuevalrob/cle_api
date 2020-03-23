@@ -57,8 +57,9 @@ if(what === 'turno') {
     .then(admins => { // [...]
       if(!admins || !admins.length) throw Error('You need at least one admin user for generate a turno')
       const availableCharges = faker.lorem.sentence().split(' ').filter(w => w.length >= 3)
-      const foodLabel = storedLabel(faker.lorem.word())
-      const permLabel = storedLabel(faker.lorem.word())
+      const threeArray = emptyArray(3)
+      const foodLabel = storedLabels(threeArray(_ => faker.lorem.word()))
+      const permLabel = storedLabels(threeArray(_ => faker.lorem.word()))
       TurnoModel.create({
         owner: admins[0].id,
         name: faker.lorem.words(),
@@ -75,18 +76,11 @@ if(what === 'turno') {
           {value: faker.date.between('2020-06-01', '2020-06-15'), label: 'inicio'},
           {value: faker.date.between('2020-06-15', '2020-07-01'), label: 'fin'}
         ],
-        campingType: [
-          {
-            name: "Monitor",
-            foodOptions: foodLabelSchema(foodLabel),
-            permissions: foodLabelSchema(permLabel)
-          },
-          {
-            name: 'Acampado',
-            foodOptions: foodLabelSchema(foodLabel),
-            permissions: foodLabelSchema(permLabel)
-          }
-        ],
+        campingType: [{name: "Monitor"}, {name: 'Acampado'}].map(obj => ({
+          ...obj,
+          foodOptions: threeArray(foodLabel),
+          permissions: threeArray(permLabel)
+        })),
       })
       .then((turno) => console.info(`${turno.name} turno added to the database`))
       .catch(error => console.error('🙅🏻‍♂️', error))
@@ -96,12 +90,11 @@ if(what === 'turno') {
 }
 
 
-const foodLabelSchema = callback => new Array(3).fill(null).map(callback)
+const emptyArray = n => callback =>
+  new Array(n).fill(null).map(callback)
 
-const storedLabel = label => (...args) => {
-  console.log(args[1])
-  return ({
-  label,
+const storedLabels = labels => (...args) => ({ // [...] => .map(fn)
+  label: labels[args[1]], //get the n element from the labels array
   status:faker.random.boolean(),
   price:faker.commerce.price(3.00,10.00,2),
-})}
+})
