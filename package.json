@@ -10,6 +10,7 @@
     "build-babel": "babel src -d dist",
     "start": "npm run build && node dist/index.js",
     "dev": "nodemon --watch src --exec npm start",
+    "seeds": "node ./dist/seeds",
     "test": "echo \"No test specified 🃏\" && exit 0"
   },
   "author": "josue",
@@ -21,6 +22,7 @@
     "@babel/register": "^7.4.0",
     "@babel/runtime": "^7.8.4",
     "babel-plugin-import-graphql": "^2.7.0",
+    "faker": "^4.1.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.17.5"
   },

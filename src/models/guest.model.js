@@ -30,7 +30,7 @@ const guestSchema = new mongoose.Schema({
     enum: USER_ROL,
     default: USER_ROL[0]
 	},
-	
+
 }, {
 	timestamps: true,
 })
