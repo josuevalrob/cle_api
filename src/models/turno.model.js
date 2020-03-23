@@ -1,12 +1,12 @@
 import mongoose, {Schema} from 'mongoose'
 export const turnKind = ['camping', 'convi', 'matri', 'sacerdotes', 'mixta', 'pro']
 const foodLabelSchema = new Schema({
-	label:{ type: String, required: true, maxlength: 20 },
-	status: {type:Boolean, default: false}, 
+	label:  {type: String, required: true, maxlength: 20 },
+	status: {type:Boolean, default: false},
 	price:  {
 		type: Number,
-		get: n => n * 100,
-		set: n => (n/100).toFixed(2)
+		// get: n => n * 100,
+		// set: n => (n/100).toFixed(2)
 	}
 });
 export const labelAndDateSchema = new Schema({
@@ -44,12 +44,11 @@ const turnoSchema = new Schema({
 	description: {
 		type: String,
 		maxlength: 240,
-		minlength: 140,
 		required: [true, 'At least give me a tweet'],
 	},
 	// bannerPhoto: String,
 	//* Teamwork
-	availableCharges: [{type: String,maxlength: 10, minlength: 3,}],
+	availableCharges: [{type: String,maxlength: 20, minlength: 3,}],
 	team: [{
 		//! validate in a turnoSchem.pre() if the mongoose.ObjectId exist.
 		user: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -63,8 +62,8 @@ const turnoSchema = new Schema({
 	nightPrice:  {
 		type: Number,
 		default: 0,
-		get: n => n * 100,
-		set: n => (n/100).toFixed(2)
+		// get: n => n * 100,
+		// set: n => (n/100).toFixed(2)
 	},
 	//* Fecha input:
 	dates: [labelAndDateSchema],
