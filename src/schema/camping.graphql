@@ -2,33 +2,65 @@
 input CampingProfileInput {
   firstName: String
   lastName: String
+  # All the inputs dates should be in date format
   birth: Date
+  # the profile photo is an url reference of an image
   profilePhoto: String
+  # array of alergies
   alergies: [String]
+  # array of mnedications
   medication: [String]
+  # current scholar course. this input is not validated
   curso: String
 }
 
+input scheduleFoodInput {
+  day: Date
+  value: String
+}
+
 input CampingInput {
+  # ID of an existing turn. this field is not validated.
   turno: ID!
   # email of the user who is gonna buy the turn
   patreonEmail: String!
+  # first name of the user who is gonna by the turn
   firstName: String!
+  # data of the current camping
   basicData: CampingProfileInput
+  # data of the responsable of the camping/acampado
   contactData: CampingProfileInput
+  # when the user is comming or leaving
   transporte: [datesInput]
+  # calendario de comidas / el parte
+  scheduleFood: [scheduleFoodInput]
 }
 """ types """
 type Camping {
   id: ID
+  # turno referenced by this camping
   turno: Turno
+  # owner or the admin who created this camping
   owner: User
+  # patreon who is paying for this camping
   patreon: User
+  # patreon previusly invited for handle this camping
   guest: Guest
+  # name of the camping
   firstName: String
+  # data of the current camping
   basicData: CampingProfile
+  # data of the responsable of the camping/acampado
   contactData: CampingProfile
+  # when the user is comming or leaving
   transporte: [dates]
+  # calendario de comidas / el parte
+  scheduleFood: [scheduleFood]
+}
+
+type scheduleFood {
+  day: Date
+  value: String
 }
 
 type CampingProfile {
