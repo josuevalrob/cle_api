@@ -2,7 +2,7 @@ require('dotenv').config();
 const what = process.env.npm_config_what // npm -what=users run seeds
 const howMany = process.env.npm_config_many || 1
 const id = process.env.npm_config_id
-const rol = process.env.npm_config_rol
+const rol = process.env.npm_config_rolex
 //* Import or generate the data
 import faker from 'faker'
 import {sampleSize, sample} from 'lodash'
