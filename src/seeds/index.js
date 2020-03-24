@@ -18,7 +18,7 @@ const mongoose = require('mongoose');
 require('../configs/bd.config');
 const emptyArray = n => callback => new Array(n).fill(null).map(callback)
 const threeArray = emptyArray(3) //helper
-const nArray = emptyArray(howMany)
+const nArray = emptyArray(parseInt(howMany))
 console.log(`ready to import ${howMany}(s) ${what} 📦 `)
 
 //* Create model with data.
