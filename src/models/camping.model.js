@@ -3,28 +3,28 @@ import {EMAIL_PATTERN} from './user.model'
 import {labelAndDateSchema} from './turno.model'
 const basicDataSchema = new Schema({
   //! add basic data!
-  firstName:{
+firstName:{
     type:String,
     required: [true, 'give me your name, at least 3 letters'],
     minlength: 3
   },
-  lastName: {
+lastName: {
     type: String,
     minlength: 3
   },
-  birth: Date,
-  profilePhoto: String,
-  alergies: [{ type: String, required: true, maxlength: 20, minlength:3 }],
-  medication: [{ type: String, required: true, maxlength: 20, minlength:3 }],
-  curso: { type: String, required: true, maxlength: 20, minlength:3 },
+birth: Date,
+profilePhoto: String,
+alergies: [{ type: String, required: true, maxlength: 20, minlength:3 }],
+medication: [{ type: String, required: true, maxlength: 20, minlength:3 }],
+curso: { type: String, required: true, maxlength: 20, minlength:3 },
 });
 
 const CampingSchema = new Schema({
   //where does this camping belongs.
-  turno: { type: Schema.Types.ObjectId, ref: 'Turno', unique:true},
+  turno: { type: Schema.Types.ObjectId, ref: 'Turno'},
   // // invitation to
   // // ? what about if the guest is already a user??
-  guest: { type: Schema.Types.ObjectId, ref: 'Guest', unique:true },
+  guest: { type: Schema.Types.ObjectId, ref: 'Guest' },
   // confirmation from
   patreonEmail: {
     type: String,
@@ -32,8 +32,8 @@ const CampingSchema = new Schema({
     trim: true,
     match: EMAIL_PATTERN
   },
-  patron: { type: Schema.Types.ObjectId, ref: 'User', unique:true },
-  owner:  { type: Schema.Types.ObjectId, ref: 'User', unique:true },
+  patreon: { type: Schema.Types.ObjectId, ref: 'User' },
+  owner:  { type: Schema.Types.ObjectId, ref: 'User' },
   firstName: { type: String, required: true, maxlength: 20, minlength:3 },
   // CampingType
   //? how to handle multiple guest invitation, if there is just one patreon reference
