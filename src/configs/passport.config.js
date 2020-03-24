@@ -29,26 +29,3 @@ passport.use(
 			.catch(error => next(error))
 	}),
 );
-
-passport.use(
-	new OAuth2Strategy(
-	  {
-		clientID: process.env.GOOGLE_CLIENT_ID,
-		clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-		// callbackURL: `http://localhost:${process.env.PORT}/google/redirect`,
-		callbackURL: '/auth/google/redirect',
-		profileFields: ['id', 'email', 'first_name', 'last_name'],
-	  },
-		async (request, accessToken, refreshToken, profile, done) => {
-			console.log(`🤯 PROFile ${profile}`)
-			try {
-				const { id } = profile
-				const email = profile.emails[0].value
-				let user = await User.findOrCreate(email, id, provider, profile)
-				done(null, user)
-			} catch (e) {
-				done(e)
-			}
-		},
-	)
-);
