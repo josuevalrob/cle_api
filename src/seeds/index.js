@@ -51,13 +51,14 @@ if(what === 'camping') {
   Promise.all([ UsersModel.findOne({rol:'admin'}), UsersModel.find({rol:'patron'}), TurnoModel.findById(id), createGuest(2)])
   .then(([admin, allUsers, turno, guests]) => {
     const users = sampleSize(allUsers, 2)
+    const campingName = faker.name.firstName()
     CampingModel.create([...users, ...guests].map(doc => ({
       owner: admin.id,
       turno: id,
       ...(!!doc.owner ? {guest: doc.id} : {patreon: doc.id}),
       patreonEmail: doc.email,
-      firstName: doc.firstName,
-      basicData: basicDataGenerator(),
+      firstName: campingName,
+      basicData: basicDataGenerator(campingName),
       contactData: basicDataGenerator(),
       transporte: datesGenerator(),
       scheduleFood: foodScheduleGenerator(turno.dates, foodOpt(turno.campingType)),
@@ -131,9 +132,9 @@ function createGuest(n) {
 
 const split = sentence => sentence.split(' ').filter(w => w.length >= 3)
 
-function basicDataGenerator(){
+function basicDataGenerator(name){
   return {
-    firstName:faker.name.firstName(),
+    firstName:name || faker.name.firstName(),
     lastName:faker.name.lastName(),
     birth:faker.date.past(10),
     profilePhoto:faker.internet.avatar(),
