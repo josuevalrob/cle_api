@@ -19,10 +19,10 @@ async function mail(recipe, message) {
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: `"Fred Foo 👻" <${process.env.EMAIL_FROM}>`, // sender address
+    from: `"Asociación la Forja 🏕" <${process.env.EMAIL_FROM}>`, // sender address
     to: recipe, // list of receivers
     subject: "New Account ✔", // Subject line
-    text: "LaForja! ⛪️", // plain text body
+    text: "LaForja!", // plain text body
     html:message // html body
   });
 
