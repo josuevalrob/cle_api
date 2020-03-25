@@ -1,5 +1,6 @@
 import CampingModel from './../models/camping.model'
 import {GuestModel} from './../models/guest.model'
+import sendMail from './../helpers/mail.helper'
 import {secure} from './../middlewares/secure.mid'
 const turno = {path:'turno',populate: ['owner', 'team.user']}
 const Query = {
@@ -18,10 +19,10 @@ const Query = {
 			)
 		)
 	),
-	getCampings: secure( (_, {turnoId, limit, offset}, context) =>
+	getCampings: secure( (_, {input, limit, offset}, context) =>
 		new Promise((resolve, reject) =>
 			CampingModel
-				.find({turno: turnoId})
+				.find(input)
         .populate(turno)
         .populate('guest')
         .populate('patreon')
@@ -46,7 +47,9 @@ const Mutation = {
       if(!guest){
         // if there is not guest neither, then we need to create a new one.
         // sadly, the patron field will be empty? //? can we fill it with the owner?
-        //TODO create a new invitation.
+				//TODO create a new invitation.
+				// ! i cant, cus i dont have all the required inputs.
+				throw new Error('You need a patreon or a guest to proceed')
       }
     }
     // we have a patreon!
@@ -60,15 +63,22 @@ const Mutation = {
     console.log('🏕 ', camping)
     return new Promise (( resolve, reject ) =>
       camping.save(async (err) => {
-        if(!!err) reject(err)
+				if(!!err) reject(err)
         const fullCamping = await camping
-          .populate(turno)
-          .populate('guest')
-          .populate('patreon')
-          .populate('owner')
-          .execPopulate()
-        console.log(fullCamping)
-        resolve(fullCamping)
+																	.populate(turno)
+																	.populate('guest')
+																	.populate('patreon')
+																	.populate('owner')
+																	.execPopulate()
+				//* sending email to the patreon.  
+				const {accepted} = await sendMail(fullCamping.patreon.email, `<b> Congratulations!! </b> <br>
+							${fullCamping.owner.firstName} has invited ${fullCamping.firstName} to the turn 
+							${fullCamping.turno.name}. Now access with you account ${fullCamping.patreon.firstName} / 
+							${fullCamping.patreon.email} and <a href="${fullCamping.patreon.id}">
+							compleate the registration process </a>`)
+							.catch(console.error)
+				console.log(accepted.includes(doc.email) ? `email send to ${fullCamping.patreon.email}` : '🙅🏻‍♂️ there was an error sending email')
+				resolve(fullCamping)
       })
     )
 	}),

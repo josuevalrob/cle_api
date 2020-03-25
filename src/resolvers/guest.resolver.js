@@ -92,8 +92,7 @@ const Mutation = {
 export default {Query, Mutation}
 
 const sendMailAndUpdateStatus = async doc => {
-	//* send mail with the doc.id as a key.
-	const {accepted, rejected} = await sendMail(doc.email, `<b> Welcome to the Website LaForja! <br>
+	const {accepted} = await sendMail(doc.email, `<b> Welcome to the Website LaForja! <br>
 		Click here to activate your account <a href="${doc.id}">Laforja.org</<a> </b>`).catch(console.error)
 	doc.status = accepted.includes(doc.email) ? 'SEND' : 'STANDBY'
 	return new Promise ((resolve, reject) => {

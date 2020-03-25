@@ -33,7 +33,7 @@ const Mutation =  {
     return { user }
   },
   logout: (root, {email, password}, context) => context.logout(),
-
+  
   updateUser: isOwner(async (root, {input}, context) => {
     console.log(input)
     const {user} = context.req

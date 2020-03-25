@@ -35,6 +35,13 @@ input CampingInput {
   # calendario de comidas / el parte
   scheduleFood: [scheduleFoodInput]
 }
+input inputSearch {
+  # ID of an existing turn. this field is not validated.
+  turno: ID
+  # email of the user who is gonna buy the turn
+  patreonEmail: String
+  # first name of the user who is gonna by the turn
+}
 """ types """
 type Camping {
   id: ID
@@ -83,7 +90,7 @@ type Query {
 	# 👮‍♂️ protected route.
 	# 📬 Limit of user to show. Offset of user to jump/hide
 	# 🕵️‍♂️ return an array of all the turnos
-	getCampings(turnoId:ID!, limit:Int, offset:Int) : [Camping]
+	getCampings(input: inputSearch!, limit:Int, offset:Int) : [Camping]
 }
 
 type Mutation {
