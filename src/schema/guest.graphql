@@ -8,6 +8,12 @@ input GuestInput {
 	firstName: String!
     status: AccountStatus
 }
+input GuestSearch {
+    owner: String
+    isProtected: Boolean
+	rol: Rol
+    status: AccountStatus
+}
 type Guest {
 	id: ID
 	letter: String
@@ -30,6 +36,7 @@ enum Rol {
 	admin
 	sudo
 }
+
 """Query """
 type Query {
     # 👮‍♂️ protected route.
@@ -39,13 +46,13 @@ type Query {
     # 👮‍♂️ protected route.
 	# 📬 Limit of user to show. Offset of user to jump/hide
 	# 🕵️‍♂️ return an array of all the guest
-    getGuests(limit: Int, offset:Int) : [Guest]
+    getGuests(input:GuestSearch, limit: Int, offset:Int) : [Guest]
     # 👮‍♂️ protected route.
 	# 📬 Limit of user to show. Offset of user to jump/hide
 	# 🕵️‍♂️ return an array of all the guest of the current user logged
     getMyGuests(limit: Int, offset:Int) : [Guest]
 }
-""" Mutation to create new clients. """
+
 type Mutation {
     # 👮‍♂️ protected route.
 	# 📬 Expect a guest input with at one of these account status: _STANDBY, SEND, ACCEPTED,DENIED, DELETED_ 

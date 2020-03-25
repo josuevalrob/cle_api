@@ -15,10 +15,10 @@ const Query = {
 			)
 		)
 	),
-	getTurnos: secure( (_, {id}, context) =>
+	getTurnos: secure( (_, {input}, context) =>
 		new Promise((resolve, reject) =>
 			TurnoModel
-				.find({})
+				.find(input)
 				.populate('owner')
 				.populate('team.user')
 				.then((turno, err) => {

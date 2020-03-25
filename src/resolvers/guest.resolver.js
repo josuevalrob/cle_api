@@ -7,8 +7,8 @@ import {modelFinderById} from './user.resolvers'
 const GuestFindById = modelFinderById(GuestModel)
 const Query = {
 	getGuest: secure((parent, {id}, context) => GuestFindById(id)),
-	getGuests: secure((root, {limit, offset}) =>
-		GuestModel.find({}).limit(limit).skip(offset)),
+	getGuests: secure((root, {input, limit, offset}) =>
+		GuestModel.find(input).limit(limit).skip(offset)),
 	getMyGuests: secure((root, {limit, offset}, context) =>
 		GuestModel.find({
 			owner: context.req.user.id

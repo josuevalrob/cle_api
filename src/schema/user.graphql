@@ -38,6 +38,12 @@ input UserUpdate {
 	birth: String
 	profilePhoto: String
 }
+input UsersSearch {
+	rol: Rol
+	Country: String
+	City: String
+	birth: String
+}
 type UserUpdated {
 	id: ID
 	rol: Rol
@@ -95,5 +101,5 @@ type Query {
 	# 👮‍♂️ protected route.
 	# 📬 Limit of user to show. Offset of user to jump/hide
 	# 🕵️‍♂️ return a list of users
-	getUsers(limit: Int, offset:Int) : [User]
+	getUsers(input:UsersSearch,limit: Int, offset:Int) : [User]
 }

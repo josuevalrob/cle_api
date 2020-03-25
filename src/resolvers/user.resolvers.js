@@ -10,7 +10,7 @@ const userFindById = modelFinderById(User)
 const Query = {
   currentUser: secure((parent, _, {req:{user:{id}}}) => userFindById(id)),
   getUser: secure((_, {id}, context) => userFindById(id)),
-  getUsers: secure((_, {limit, offset}) => User.find({}).limit(limit).skip(offset))
+  getUsers: secure((_, {input,limit, offset}) => User.find(input).limit(limit).skip(offset))
 }
 
 const Mutation =  {
@@ -33,7 +33,7 @@ const Mutation =  {
     return { user }
   },
   logout: (root, {email, password}, context) => context.logout(),
-  
+
   updateUser: isOwner(async (root, {input}, context) => {
     console.log(input)
     const {user} = context.req

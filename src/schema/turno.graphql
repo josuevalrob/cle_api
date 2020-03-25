@@ -77,6 +77,11 @@ input TurnoInput {
 	campingType: [campingTypeInput]
 	dates: [datesInput]
 }
+input TurnoSearch {
+	owner: ID
+	kind: turnKind
+	nightPrice: Float
+}
 
 input teamInput {
 	user: ID
@@ -118,7 +123,7 @@ type Query {
 	# 👮‍♂️ protected route.
 	# 📬 Limit of user to show. Offset of user to jump/hide
 	# 🕵️‍♂️ return an array of all the turnos
-	getTurnos(limit:Int, offset:Int) : [Turno]
+	getTurnos(input:TurnoSearch, limit:Int, offset:Int) : [Turno]
 }
 
 type Mutation {
