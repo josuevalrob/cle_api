@@ -11,7 +11,7 @@ input GuestInput {
 type Guest {
 	id: ID
 	letter: String
-    owner: String
+    owner: String # this should be of type user... 
     isProtected: Boolean
 	rol: Rol
 	email: String!
@@ -52,6 +52,7 @@ type Mutation {
     # or one of these rol _patron, admin, sudo_.
 	# 🕵️‍♂️ return the saved guest
     createGuest(input: GuestInput): Guest
+    updateGuest(input: GuestInput): Guest
     # 👮‍♂️ protected route.
 	# 📬 expect the new status and the email to be udated. 
     # 🚨 this mutation do not send a new email

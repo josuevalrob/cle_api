@@ -1,6 +1,6 @@
 import {GuestModel} from './../models/guest.model'
 import CampingModel from './../models/camping.model'
-import TurnoModel from './../models/turno.model'
+import sendMail from './../helpers/mail.helper'
 import {destructureUser} from './user.resolvers'
 import {secure} from './../middlewares/secure.mid'
 import {modelFinderById} from './user.resolvers'
@@ -77,15 +77,25 @@ const Mutation = {
 		guest.status = status
 		await guest.save()
 		return guest
+	}),
+	updateGuest : secure(async(_, {input}, context) => {
+		const guest = await GuestModel.findById(input.id)
+		if(!guest) throw new Error('Guest not found')
+		Object.assign(guest, input);
+		const guestSaved = await guest.save()
+		if(!guestSaved) throw new Error('There was a problem saving the user')
+		return guest
+
 	})
 }
 
 export default {Query, Mutation}
 
-const sendMailAndUpdateStatus = doc => {
-	//* send mail with the doc.id as a key. 
-	doc.status = 'SEND'
-	console.log('sendMailAndUpdateStatus 📮')
+const sendMailAndUpdateStatus = async doc => {
+	//* send mail with the doc.id as a key.
+	const {accepted, rejected} = await sendMail(doc.email, `<b> Welcome to the Website LaForja! <br>
+		Click here to activate your account <a href="${doc.id}">Laforja.org</<a> </b>`).catch(console.error)
+	doc.status = accepted.includes(doc.email) ? 'SEND' : 'STANDBY'
 	return new Promise ((resolve, reject) => {
 		return doc.save(err => {
 			if(err) reject(err)

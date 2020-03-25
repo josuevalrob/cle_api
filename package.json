@@ -24,7 +24,7 @@
     "babel-plugin-import-graphql": "^2.7.0",
     "faker": "^4.1.0",
     "mocha": "^5.2.0",
-    "nodemon": "^1.17.5"
+    "nodemon": "^2.0.2"
   },
   "dependencies": {
     "@babel/preset-env": "^7.4.2",
@@ -39,6 +39,7 @@
     "lodash": "^4.17.15",
     "merge-graphql-schemas": "^1.7.6",
     "mongoose": "^5.9.1",
+    "nodemailer": "^6.4.6",
     "passport": "^0.4.1",
     "passport-google-oauth": "^2.0.0",
     "uuid": "^7.0.0"

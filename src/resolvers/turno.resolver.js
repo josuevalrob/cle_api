@@ -1,6 +1,5 @@
 import TurnoModel, { turnKind } from './../models/turno.model'
 import {secure} from './../middlewares/secure.mid'
-import {merge, mergeWith, isPlainObject, isArray, has} from 'lodash'
 
 const Query = {
 	getTurno: secure( (_, {id}, context) =>
@@ -68,26 +67,6 @@ const Mutation = {
 			)
 		)
 	}),
-	// updateTurno: secure((_, {input} ) => {
-	// 	return new Promise((resolve, reject) =>
-	// 		TurnoModel.findById(input.id)
-	// 			.then((turno, err) => {
-	// 				if(err) reject(err)
-	// 				console.log('⛺️ ', turno)
-	// 				console.log('🏕 ', input)
-	// 				const newTurno = merge(turno, input)
-	// 				newTurno.save((err) => {
-	// 					if(err) reject(err)
-	// 					console.log('🔥 ',newTurno)
-	// 					resolve(newTurno
-	// 									.populate('owner')
-	// 									.populate('team.user')
-	// 									.execPopulate())
-	// 				});
-	// 			}
-	// 		)
-	// 	)
-	// }),
 	deleteTurno: secure((root, {id}) => {
 		console.log('💀 ',id)
 		return new Promise ((resolve, object) =>
