@@ -15,28 +15,28 @@ const Query = {
 		}).limit(limit).skip(offset)),
 }
 const Mutation = {
-	createGuest : secure(async (root, {input}, context) => {
-		const {id, firstName} = context.req.user
-		console.log('preparint to save 💽...', input.email + ' by ' + firstName)
+	createGuest : async (root, {input}, context) => {
+		console.log('preparint to save 💽...', input.email )
 		const existUser = await context.User.findOne({email:input.email})
-		if (existUser) throw new Error ('🙅🏻‍♂️ 📫 Email already registered as User')
+		const existGuest = await GuestModel.findOne({email:input.email})
+		if (existUser || existGuest) throw new Error ('🙅🏻‍♂️ 📫 Email already in use')
 		const newGuest = new GuestModel({
+			...(!!context.req && !!context.req.user && { owner: context.req.user.id}),
 			firstName: input.firstName,
 			email: input.email,
 			rol: input.rol,
 			letter: input.letter,
 			status: input.status,
-			owner: id,
 			isProtected: input.isProtected
 		})
 		newGuest.id = newGuest._id
 		return new Promise (( resolve, reject ) => {
 			return newGuest.save(err => {
 				if(err) reject(err)
-				else resolve(newGuest)
+				else resolve(sendMailToAdmin(newGuest))
 			})
 		})
-	}),
+	},
 	sendGuest : secure(async (root, {email, status}, context) => {
 		const {id} = context.req.user
 		const guest = await GuestModel.findOne({email})
@@ -49,7 +49,7 @@ const Mutation = {
 		})
 	}),
 	// TODO update guest status!!
-	signupGuest : async (root, {input, key}, context) => {
+	signupGuest : async (root, {input, key}, context) => { //final part of the guest process
 		console.log('📩 ', input.email)
 		const guest = await GuestModel.findOne({email:input.email})
 		//? can I extract this?
@@ -71,7 +71,7 @@ const Mutation = {
 		await context.login(userSaved);
 		return {user: newUser}
 	},
-	updateGuestStatus : secure(async (root, {status, email}, context) => {
+	updateGuestStatus : secure(async (root, {status, email}, context) => { //backdoor
 		const guest = await GuestModel.findOne({email})
 		if(!guest) throw new Error (`Guest not found`)
 		guest.status = status
@@ -101,4 +101,23 @@ const sendMailAndUpdateStatus = async doc => {
 			else resolve(doc)
 		})
 	})
+}
+
+const sendMailToAdmin = async doc => {
+	const {accepted} = await sendMail(
+		process.env.FIRST_ADMIN_EMAIL, //email goes to the general admin
+		// ! this should be in a email temnplate
+		`
+			<b> Hello SuperAdmin! <br>
+			Hemos recibido un correo por parte de ${doc.firstName} solicitando lo siguiente
+			${doc.letter}.
+			<br>
+			Hemos creado en tu perfil de administrador el perfil del invitado bajo este correo
+			electrónico: ${doc.email}, si consideras puedes acceder a la plataforma en el
+			apartado de invitados y completar su perfil para poder enviarle una invtación para la 
+			cuenta de Patreon.
+		`
+		).catch(console.error)
+		console.log(accepted.includes(process.env.FIRST_ADMIN_EMAIL) ? 'email send' : 'something wrong')
+		return doc
 }
