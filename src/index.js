@@ -10,7 +10,7 @@ require('./configs/passport.config');
 //🎟 Import session tracker
 import session from 'express-session';
 import { v4 as uuidv4 } from 'uuid';
-
+import cors from './configs/cors.config';
 //server imports
 import express from 'express'
 import {ApolloServer} from 'apollo-server-express';
@@ -23,12 +23,16 @@ import {typeDefs} from './schema/typeDef'
 import resolvers from './resolvers'
 //party 🎉
 const app = express()
+app.use(cors)
+app.use(express.urlencoded({extended: true}))
+
 //Express session: 🎟 It provides the functionality to save session data in a storage that you choose
 app.use(session({
   genid: (req) => uuidv4(),
   secret: process.env.SESSION_SECRECT,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
+  cookie: { path: '/', httpOnly: true, secure: false, maxAge: null }
   //! set in env variable
   // cookie: { secure: true } //enforece https session in production environment. 
 }));
