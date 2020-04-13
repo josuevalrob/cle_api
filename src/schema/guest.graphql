@@ -69,7 +69,7 @@ type Mutation {
 	# 📬 expect the id to find the guest and delete it
     # 🔏 accesible for admin or super user
     # 🚨 this mutation do not send a new email
-	# 🕵️‍♂️ return the saved guest
+	# 🕵️‍♂️ return the a confirmation message
     deleteGuest( id: ID! ) : String
     # 👮‍♂️ protected route.
 	# 📬 expect email of the guest that you wish to send the email

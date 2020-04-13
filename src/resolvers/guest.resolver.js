@@ -86,7 +86,18 @@ const Mutation = {
 		if(!guestSaved) throw new Error('There was a problem saving the user')
 		return guest
 
-	})
+	}),
+	deleteGuest : secure((root, {id}) => {
+		console.log('💀 Killing guest',id)
+		return new Promise ((resolve, object) =>
+				GuestModel.findOneAndRemove(
+						{_id : id} ,
+						(error, guest) => error //callback
+								? rejects(error)
+								: resolve("Se elimino correctamente")
+				)
+		)
+	}),
 }
 
 export default {Query, Mutation}
@@ -108,7 +119,8 @@ const sendMailToAdmin = async doc => {
 		process.env.FIRST_ADMIN_EMAIL, //email goes to the general admin
 		// ! this should be in a email temnplate
 		`
-			<b> Hello SuperAdmin! <br>
+			<b> Hello SuperAdmin! </b>
+			<br>
 			Hemos recibido un correo por parte de ${doc.firstName} solicitando lo siguiente
 			${doc.letter}.
 			<br>
