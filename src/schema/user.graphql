@@ -17,7 +17,6 @@ type User {
 	id: ID
 	rol: Rol
 	email: String!
-	password: String!
 	firstName: String!
 	lastName: String
 	phone: String
@@ -29,7 +28,6 @@ type User {
 input UserUpdate {
 	id: ID
 	rol: Rol
-	password: String
 	firstName: String
 	lastName: String
 	phone: String
