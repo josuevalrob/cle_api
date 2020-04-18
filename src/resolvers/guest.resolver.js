@@ -3,7 +3,7 @@ import CampingModel from './../models/camping.model'
 import sendMail from './../helpers/mail.helper'
 import {destructureUser} from './user.resolvers'
 import {secure} from './../middlewares/secure.mid'
-import {modelFinderById} from './user.resolvers'
+import { newGuestRequest, guestApproved } from "./../templates";
 const Query = {
 	getGuest: secure((parent, {id}, context) =>
 		new Promise((resolve, reject) =>
@@ -135,8 +135,7 @@ const Mutation = {
 export default {Query, Mutation}
 
 const sendMailAndUpdateStatus = async doc => {
-	const {accepted} = await sendMail(doc.email, `<b> Welcome to the Website LaForja! <br>
-		Click here to activate your account <a href="${doc.id}">Laforja.org</<a> </b>`).catch(console.error)
+	const {accepted} = await sendMail(doc.email, guestApproved(doc)).catch(console.error)
 	doc.status = accepted.includes(doc.email) ? 'SEND' : 'STANDBY'
 	return new Promise ((resolve, reject) => {
 		return doc.save(err => {
@@ -148,19 +147,8 @@ const sendMailAndUpdateStatus = async doc => {
 
 const sendMailToAdmin = async doc => {
 	const {accepted} = await sendMail(
-		process.env.FIRST_ADMIN_EMAIL, //email goes to the general admin
-		// ! this should be in a email temnplate
-		`
-			<b> Hello SuperAdmin! </b>
-			<br>
-			Hemos recibido un correo por parte de ${doc.firstName} solicitando lo siguiente
-			${doc.letter}.
-			<br>
-			Hemos creado en tu perfil de administrador el perfil del invitado bajo este correo
-			electrónico: ${doc.email}, si consideras puedes acceder a la plataforma en el
-			apartado de invitados y completar su perfil para poder enviarle una invtación para la 
-			cuenta de Patreon.
-		`
+			process.env.FIRST_ADMIN_EMAIL, //email goes to the general admin
+			newGuestRequest(doc)
 		).catch(console.error)
 		console.log(accepted.includes(process.env.FIRST_ADMIN_EMAIL) ? 'email send' : 'something wrong')
 		return doc
