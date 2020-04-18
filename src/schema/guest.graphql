@@ -17,7 +17,7 @@ input GuestSearch {
 type Guest {
 	id: ID
 	letter: String
-    owner: String # this should be of type user... 
+    owner: User # this should be of type user... 
     isProtected: Boolean
 	rol: Rol
 	email: String!

@@ -4,15 +4,47 @@ import sendMail from './../helpers/mail.helper'
 import {destructureUser} from './user.resolvers'
 import {secure} from './../middlewares/secure.mid'
 import {modelFinderById} from './user.resolvers'
-const GuestFindById = modelFinderById(GuestModel)
 const Query = {
-	getGuest: secure((parent, {id}, context) => GuestFindById(id)),
-	getGuests: secure((root, {input, limit, offset}) =>
-		GuestModel.find(input).limit(limit).skip(offset)),
+	getGuest: secure((parent, {id}, context) =>
+		new Promise((resolve, reject) =>
+			GuestModel
+				.findById(id)
+				.populate('owner')
+				.then((turno, err) => {
+					if(err) reject(err)
+					else resolve(turno)
+				}
+			)
+		)
+	),
+	getGuests: secure((root, {input, limit, offset}) => 
+		new Promise((resolve, reject) =>
+			GuestModel
+				.find(input)
+				.populate('owner')
+				.limit(limit)
+				.skip(offset)
+				.then((turno, err) => {
+					if(err) reject(err)
+					else resolve(turno)
+				}
+			)
+		)
+	),
 	getMyGuests: secure((root, {limit, offset}, context) =>
-		GuestModel.find({
-			owner: context.req.user.id
-		}).limit(limit).skip(offset)),
+		new Promise((resolve, reject) =>
+			GuestModel
+				.find({owner: context.req.user.id})
+				.populate('owner')
+				.limit(limit)
+				.skip(offset)
+				.then((turno, err) => {
+					if(err) reject(err)
+					else resolve(turno)
+				}
+			)
+		)
+	),
 }
 const Mutation = {
 	createGuest : async (root, {input}, context) => {
