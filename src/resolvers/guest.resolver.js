@@ -10,9 +10,9 @@ const Query = {
 			GuestModel
 				.findById(id)
 				.populate('owner')
-				.then((turno, err) => {
+				.then((guest, err) => {
 					if(err) reject(err)
-					else resolve(turno)
+					else resolve(guest)
 				}
 			)
 		)
@@ -24,9 +24,9 @@ const Query = {
 				.populate('owner')
 				.limit(limit)
 				.skip(offset)
-				.then((turno, err) => {
+				.then((guest, err) => {
 					if(err) reject(err)
-					else resolve(turno)
+					else resolve(guest)
 				}
 			)
 		)
@@ -38,9 +38,9 @@ const Query = {
 				.populate('owner')
 				.limit(limit)
 				.skip(offset)
-				.then((turno, err) => {
+				.then((guest, err) => {
 					if(err) reject(err)
-					else resolve(turno)
+					else resolve(guest)
 				}
 			)
 		)
@@ -69,13 +69,13 @@ const Mutation = {
 			})
 		})
 	},
-	sendGuest : secure(async (root, {email, status}, context) => {
-		const {id} = context.req.user
-		const guest = await GuestModel.findOne({email})
+	sendGuest : secure(async (root, {id, letter}, context) => {
+		const guest = await GuestModel.findById(id)
 		if (!guest) throw new Error (`Guest ${email} doesn´t exist, please, create it first`)
-		// console.log(guest.owner, id, guest.owner != id)
+		guest.letter = letter
+		// console.log('Ready to send mail to 📮 ', guest.firstName)
 		return new Promise (( resolve, reject ) => {
-			return guest.isProtected && guest.owner != id
+			return guest.isProtected && guest.owner != context.req.user.id
 				? reject(`${email} is isProtected, and is not your user. `)
 				: resolve(sendMailAndUpdateStatus(guest))
 		})
@@ -114,9 +114,20 @@ const Mutation = {
 		const guest = await GuestModel.findById(input.id)
 		if(!guest) throw new Error('Guest not found')
 		Object.assign(guest, input);
-		const guestSaved = await guest.save()
-		if(!guestSaved) throw new Error('There was a problem saving the user')
-		return guest
+		// const guestSaved = await guest.save()
+		// if(!guestSaved) throw new Error('There was a problem saving the user')
+		// console.log(`Guest ${guestSaved.firstName} ready to be updated with the owner: ${guestSaved.owner}`)
+		console.log(guest)
+		return new Promise (( resolve, reject ) =>
+			guest.save(err => !!err
+				? reject(err)
+				: resolve(
+						guest
+						.populate('owner')
+						.execPopulate()
+					)
+			)
+		)
 
 	}),
 	deleteGuest : secure((root, {id}) => {

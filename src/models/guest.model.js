@@ -20,7 +20,7 @@ const guestSchema = new mongoose.Schema({
 		enum: guestStatus,
 		default: guestStatus[0]
 	},
-	owner: mongoose.ObjectId,
+	owner:  { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 	isProtected: {
 		type: Boolean,
 		default: false

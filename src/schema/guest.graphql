@@ -75,7 +75,7 @@ type Mutation {
 	# 📬 expect email of the guest that you wish to send the email
     # 🚨 this mutation send a new email
 	# 🕵️‍♂️ return the saved guest
-    sendGuest(email: String!): Guest
+    sendGuest(email: String!, letter: String): Guest
 	# 👤 unProtected route.
 	# 📬 Expect a guest input with at one of these account status: _STANDBY, SEND, ACCEPTED,DENIED, DELETED_ 
     # or one of these rol _patron, admin, sudo_.
