@@ -20,9 +20,9 @@ export const guestApproved = ({id}) => /*html*/
   </p>
 `
 
-export const assignManager = ({id, firstName, email}) => /*html*/
+export const assignManager = ({id, firstName, email, owner}) => /*html*/
 `
-  <b> 👋 Hola, qué tal! </b>
+  <b> 👋 Hola, qué tal ${owner.firstName}! </b>
   <br>
   Te hemos asignado un nuevo invitado, ${firstName}
   <br>
@@ -41,6 +41,6 @@ export const assignManager = ({id, firstName, email}) => /*html*/
   <br>
   <p>
     Si necesitas contactarte con ${firstName}, recuerda que aqui tienes su
-    email: ${email}
+    email: <a href="${email}">${email}</p>
   </p>
 `

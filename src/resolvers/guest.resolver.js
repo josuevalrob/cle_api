@@ -3,7 +3,7 @@ import CampingModel from './../models/camping.model'
 import sendMail from './../helpers/mail.helper'
 import {destructureUser} from './user.resolvers'
 import {secure} from './../middlewares/secure.mid'
-import { newGuestRequest, guestApproved } from "./../templates";
+import { newGuestRequest, guestApproved, assignManager } from "./../templates";
 const Query = {
 	getGuest: secure((parent, {id}, context) =>
 		new Promise((resolve, reject) =>
@@ -114,30 +114,24 @@ const Mutation = {
 		const guest = await GuestModel.findById(input.id)
 		if(!guest) throw new Error('Guest not found')
 		Object.assign(guest, input);
-		// const guestSaved = await guest.save()
-		// if(!guestSaved) throw new Error('There was a problem saving the user')
-		// console.log(`Guest ${guestSaved.firstName} ready to be updated with the owner: ${guestSaved.owner}`)
-		console.log(guest)
 		return new Promise (( resolve, reject ) =>
-			guest.save(err => !!err
-				? reject(err)
-				: resolve(
-						guest
-						.populate('owner')
-						.execPopulate()
-					)
-			)
+			guest.save(async err => {
+				if(!!err) return reject(err)
+				const guestAndOwner = await guest.populate('owner').execPopulate()
+				if(input.owner == guest.owner._id) return resolve(guestAndOwner)
+				// * if they are not the same, let's notify to the new owner/manager
+				return resolve(notifyNewManager(guestAndOwner))
+			})
 		)
-
 	}),
 	deleteGuest : secure((root, {id}) => {
 		console.log('💀 Killing guest',id)
 		return new Promise ((resolve, object) =>
 				GuestModel.findOneAndRemove(
-						{_id : id} ,
-						(error, guest) => error //callback
-								? rejects(error)
-								: resolve("Se elimino correctamente")
+					{_id : id} ,
+					(error, guest) => error //callback
+						? rejects(error)
+						: resolve("Se elimino correctamente")
 				)
 		)
 	}),
@@ -157,10 +151,17 @@ const sendMailAndUpdateStatus = async doc => {
 }
 
 const sendMailToAdmin = async doc => {
-	const {accepted} = await sendMail(
-			process.env.FIRST_ADMIN_EMAIL, //email goes to the general admin
-			newGuestRequest(doc)
+	await sendMail(
+		process.env.FIRST_ADMIN_EMAIL, //* email goes to the general admin
+		newGuestRequest(doc)
+	).catch(console.error)
+	return doc
+}
+const notifyNewManager = async guest => {
+	console.log(`📮 notify manager ${guest.owner.email}`)
+	await sendMail(
+			guest.owner.email, //email goes to the general admin
+			assignManager(guest)
 		).catch(console.error)
-		console.log(accepted.includes(process.env.FIRST_ADMIN_EMAIL) ? 'email send' : 'something wrong')
-		return doc
+	return guest
 }

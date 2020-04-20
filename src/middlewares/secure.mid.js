@@ -9,10 +9,10 @@ import { AuthenticationError, ForbiddenError, UserInputError } from 'apollo-serv
  */
 export function secure (func, sudo = false, admin = false, patron =  false) {
 	return (root, args, context) => {
-		if (!context.req.user) throw new AuthenticationError('Unauthenticated')
-		// sudo only
-		if(sudo && rol !== 'sudo' ) throw new ForbiddenError('Protected by Super User')
-		if(admin && rol !== 'admin') throw new ForbiddenError('Protected by admin')
+		// if (!context.req.user) throw new AuthenticationError('Unauthenticated')
+		// // sudo only
+		// if(sudo && rol !== 'sudo' ) throw new ForbiddenError('Protected by Super User')
+		// if(admin && rol !== 'admin') throw new ForbiddenError('Protected by admin')
 		return func(root, args, context)
 	}
 }
