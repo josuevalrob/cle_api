@@ -70,13 +70,8 @@ const Mutation = {
 																	.populate('patreon')
 																	.populate('owner')
 																	.execPopulate()
-				//* sending email to the patreon.  
-				const {accepted} = await sendMail(fullCamping.patreon.email, `<b> Congratulations!! </b> <br>
-							${fullCamping.owner.firstName} has invited ${fullCamping.firstName} to the turn 
-							${fullCamping.turno.name}. Now access with you account ${fullCamping.patreon.firstName} / 
-							${fullCamping.patreon.email} and <a href="${fullCamping.patreon.id}">
-							compleate the registration process </a>`)
-							.catch(console.error)
+				//* sending email to the patreon.
+				const {accepted} = await sendMail(fullCamping.patreon.email, invToCamping(fullCamping)).catch(console.error)
 				console.log(accepted.includes(doc.email) ? `email send to ${fullCamping.patreon.email}` : '🙅🏻‍♂️ there was an error sending email')
 				resolve(fullCamping)
       })

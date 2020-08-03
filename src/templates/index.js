@@ -44,3 +44,18 @@ export const assignManager = ({id, firstName, email, owner}) => /*html*/
     email: <a href="${email}">${email}</p>
   </p>
 `
+//* sending email to the patreon.
+export const invToCamping = ({firstName, owner, patreon, turno}) => /*html*/
+`
+  <b> Congratulations!! </b> 
+  <br>
+  <p>
+    ${owner.firstName} has invited ${firstName} 
+    to the turn ${turno.name}. 
+  </p>
+  <p>
+    Now access with you account ${patreon.firstName} / 
+    ${patreon.email} and <a href="${patreon.id}">
+    compleate the registration process </a>
+  </p>  
+`
