@@ -77,10 +77,11 @@ if(what === 'turno') {
       const availableCharges = faker.lorem.sentence().split(' ').filter(w => w.length >= 3)
       const foodLabel = storedLabels(threeArray(_ => faker.lorem.word()))
       const permLabel = storedLabels(threeArray(_ => faker.lorem.word()))
+      console.log('🏕')
       TurnoModel.create({
         owner: admins[0].id,
         name: faker.lorem.words(),
-        description: faker.lorem.paragraph(1),
+        description: shorten(faker.lorem.paragraph(1), 240),
         availableCharges,
         nightPrice: faker.commerce.price(10.00,25.00,2),
         team: admins
@@ -166,4 +167,8 @@ function foodScheduleGenerator(dates, foodOptions) {
 
 function foodOpt(arr) {
   return arr[0].foodOptions.map(({label}) => label)
+}
+
+function shorten(text,max) {
+  return text && text.length > max ? text.slice(0,max).split(' ').slice(0, -1).join(' ') : text
 }
