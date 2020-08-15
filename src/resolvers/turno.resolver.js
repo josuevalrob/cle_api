@@ -23,6 +23,11 @@ const Query = {
 				.populate('team.user')
 				.then((turno, err) => {
 					if(err) reject(err)
+					// console.log()
+					// const enrolled = await Promise.all([
+					// 	turnos.map(async turno => await CampingModel.countDocuments({turno: turno._id}))
+					// ])
+					// console.log(enrolled)
 					else resolve(turno)
 				}
 			)

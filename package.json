@@ -11,7 +11,7 @@
     "start": "npm run build && node dist/index.js",
     "dev": "nodemon --watch src --exec npm start",
     "seeds": "node ./dist/seeds",
-    "test": "echo \"No test specified 🃏\" && exit 0"
+    "test": "npm run build && mocha --require @babel/register"
   },
   "author": "josue",
   "license": "ISC",

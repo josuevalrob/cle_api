@@ -37,6 +37,8 @@ type Turno {
 	dates: [dates]
 	# price for each day spend in the camp
 	nightPrice: Float
+	# Total number of camping
+	enrolled: Int
 }
 type team {
 	user: User

@@ -1,3 +1,4 @@
+import{normalizePort} from './utils' 
 //environment variables
 require('dotenv').config();
 //🌩 connected to de database 🗄️
@@ -60,21 +61,7 @@ app.use('/auth', authRoutes)
 // app.use('/', graphQlRouter)
 server.applyMiddleware({app}) //connecta Apollo with express
 
-app.listen(port, () => console.log(`Server Ready 🚀 #${Date.now()}, on port ${port}`))
+app.listen(port, () => console.log(`Server Ready 🚀  #${Date.now()}, on port ${port}`))
 
-
-/**
- * Normalize a port into a number, string, or false.
- */
-function normalizePort(val) {
-  var port = parseInt(val, 10);
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-  return false;
-}
+// Export our app for testing purposes
+export default server;
