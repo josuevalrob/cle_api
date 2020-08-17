@@ -13,9 +13,10 @@ import TurnoModel from '../models/turno.model'
 import CampingModel from '../models/camping.model'
 //* require mongoose
 const mongoose = require('mongoose');
+import {connectDB, stopDatabase} from '../configs/bd.config';
 
 //* Import Database connection
-require('../configs/bd.config');
+connectDB();
 const emptyArray = n => callback => new Array(n).fill(null).map(callback)
 const threeArray = emptyArray(3) //helper
 const nArray = emptyArray(parseInt(howMany))
@@ -38,11 +39,11 @@ if(what === 'users') {
   })))
   .then((users) => console.info(`${users.length} new users added to the database`))
   .catch(error => console.error(error))
-  .then(() => mongoose.connection.close());
+  .then(stopDatabase);
 }
 
 if(what === 'guest') {
-    createGuest(howMany).then(_=> mongoose.connection.close());
+    createGuest(howMany).then(stopDatabase);
 }
 
 if(what === 'camping') {
@@ -65,7 +66,7 @@ if(what === 'camping') {
     })))
     .then((campings) => console.info(`${campings.length} new campings added to the turno ${turno.name}`))
     .catch(console.error)
-    .then(() => mongoose.connection.close());
+    .then(stopDatabase);
   })
   .catch(console.error)
 }
@@ -99,7 +100,7 @@ if(what === 'turno') {
       })
       .then((turno) => console.info(`${turno.name} turno added to the database`))
       .catch(error => console.error('🙅🏻‍♂️', error))
-      .then(() => mongoose.connection.close());
+      .then(stopDatabase);
     })
     .catch(error => console.error('👮🏻‍♂️', error))
 }
