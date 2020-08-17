@@ -1,17 +1,23 @@
-import User from '../models/user.model'
-import {secure, isOwner} from './../middlewares/secure.mid'
-import {GuestModel} from './../models/guest.model'
-
-export const modelFinderById = model => id => new Promise ((resolve, rejects) =>
-  model.findById(id, (err, doc) => err ? rejects(err): resolve(doc)))
+import {modelFinderById} from './user.queries';
+import User from '../../models/user.model';
+import {secure, isOwner} from './../../middlewares/secure.mid';
+import {GuestModel} from './../../models/guest.model';
 
 const userFindById = modelFinderById(User)
 
-const Query = {
-  currentUser: secure((parent, _, {req:{user:{id}}}) => userFindById(id)),
-  getUser: secure((_, {id}, context) => userFindById(id)),
-  getUsers: secure((_, {input,limit, offset}) => User.find(input).limit(limit).skip(offset))
-}
+export const destructureUser = (input) => ({
+  id: input.id,
+  rol: input.rol,
+  email: input.email,
+  password: input.password,
+  firstName: input.firstName,
+  lastName: input.lastName,
+  phone: input.phone,
+  Country: input.Country,
+  City: input.City,
+  birth: input.birth,
+  profilePhoto: input.profilePhoto,
+})
 
 const Mutation =  {
   //* just for admin
@@ -70,18 +76,4 @@ const Mutation =  {
   })
 }
 
-export default {Query, Mutation}
-
-export const destructureUser = (input) => ({
-  id: input.id,
-  rol: input.rol,
-  email: input.email,
-  password: input.password,
-  firstName: input.firstName,
-  lastName: input.lastName,
-  phone: input.phone,
-  Country: input.Country,
-  City: input.City,
-  birth: input.birth,
-  profilePhoto: input.profilePhoto,
-})
+export default Mutation

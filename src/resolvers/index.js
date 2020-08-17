@@ -1,4 +1,4 @@
-import userResolver from './user.resolvers'
+import userResolver from './users/user.resolver'
 import guestResolver from './guest.resolver'
 import turnResolver from './turno.resolver'
 import campingResolver from './camping.resolver'
@@ -28,10 +28,10 @@ const scalarResolvers = {
 }
 const resolvers = merge(
   userResolver,
-   guestResolver,
-   turnResolver,
-   scalarResolvers,
-   campingResolver
+  guestResolver,
+  turnResolver,
+  scalarResolvers,
+  campingResolver
 )
 // console.log(resolvers)
 export default resolvers

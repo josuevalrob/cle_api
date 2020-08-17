@@ -1,12 +1,12 @@
 import request from 'supertest';
-import app from '../App'
-import {stopDatabase} from '../configs/bd.config';
+import app from '../../App'
+import {stopDatabase} from '../../configs/bd.config';
 
 afterAll(async () => {
   await stopDatabase();
 });
 
-test("fetch users", async (done) => {
+test("fetch all the users - getUsers", async (done) => {
   request(app)
     .post("/graphql")
     .send({

@@ -1,7 +1,7 @@
 import {GuestModel} from './../models/guest.model'
 import CampingModel from './../models/camping.model'
 import sendMail from './../helpers/mail.helper'
-import {destructureUser} from './user.resolvers'
+import {destructureUser} from './users/user.mutations'
 import {secure} from './../middlewares/secure.mid'
 import { newGuestRequest, guestApproved, assignManager } from "./../templates";
 const Query = {
