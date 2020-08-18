@@ -3,7 +3,7 @@ import { secure } from './../../middlewares/secure.mid'
 export const modelFinderById = model => id => new Promise ((resolve, rejects) =>
   model.findById(id, (err, doc) => err ? rejects(err): resolve(doc)));
 
-  const userFindById = modelFinderById(User)
+const userFindById = modelFinderById(User)
 
 const Query = {
   currentUser: secure((parent, _, {req:{user:{id}}}) => userFindById(id)),

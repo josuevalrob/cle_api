@@ -4,7 +4,7 @@ import {secure, isOwner} from './../../middlewares/secure.mid';
 import {GuestModel} from './../../models/guest.model';
 
 const userFindById = modelFinderById(User)
-
+//TODO: use the UserFields from queryTest file
 export const destructureUser = (input) => ({
   id: input.id,
   rol: input.rol,
