@@ -11,7 +11,8 @@
     "start": "npm run build && node dist/index.js",
     "dev": "nodemon --watch src --exec npm start",
     "seeds": "node ./dist/seeds",
-    "test": "npm run clean && jest"
+    "test": "npm run clean && jest",
+    "test:watch": "npm run clean && jest --watch"
   },
   "author": "josue",
   "license": "ISC",

@@ -27,10 +27,9 @@ test("Create user only once!", async (done) => {
     })
     .set("Accept", "application/json")
     .expect("Content-Type", /json/)
-    // .expect(200)
+    .expect(200)
     .end((err, response) => {
       if (err) return done(err);
-      console.log(response.error)
       // expect(data).toBeInstanceOf(Object);
       // const {signup} = data;
       // expect(signup).toBeInstanceOf(Object);

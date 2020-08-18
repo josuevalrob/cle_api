@@ -14,7 +14,7 @@ const Query = {
 			)
 		)
 	),
-	getGuests: secure((root, {input, limit, offset}) => 
+	getGuests: secure((root, {input, limit, offset}) =>
 		new Promise((resolve, reject) =>
 			GuestModel
 				.find(input)

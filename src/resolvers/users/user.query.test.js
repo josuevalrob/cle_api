@@ -2,8 +2,8 @@ import request from 'supertest';
 import app from '../../App'
 import {stopDatabase} from '../../configs/bd.config';
 import {UserFields, getUserFields} from './user.resolver';
+import {checkFields} from './../../tests/utils'
 
-export const checkFields = data => field => expect(data).toHaveProperty(field)
 
 afterAll(async () => {
   await stopDatabase();
