@@ -20,7 +20,7 @@ connectDB();
 const emptyArray = n => callback => new Array(n).fill(null).map(callback)
 const threeArray = emptyArray(3) //helper
 const nArray = emptyArray(parseInt(howMany))
-console.log(`ready to import ${howMany}(s) ${what} 📦 `)
+console.log(`ready to generate ${howMany}(s) ${what} 📦 `)
 
 //* Create model with data.
 //? User:

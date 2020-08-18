@@ -1,21 +1,9 @@
 import request from 'supertest';
 import app from '../../App'
 import {stopDatabase} from '../../configs/bd.config';
+import {UserFields, getUserFields} from './user.resolver';
 
-const UserFields = [
-  "id",
-  "rol",
-  "email",
-  "firstName",
-  "lastName",
-  "phone",
-  "Country",
-  "City",
-  "birth",
-  "profilePhoto",
-]
-const checkFields = data => field => expect(data).toHaveProperty(field)
-const getUserFields = () => UserFields.join(' ')
+export const checkFields = data => field => expect(data).toHaveProperty(field)
 
 afterAll(async () => {
   await stopDatabase();
@@ -59,7 +47,7 @@ test("fetch firstName in getUsers array", async (done) => {
     });
 });
 // * getUsers
-test("fetch getUsers limited and offseted", async (done) => {
+test("fetch getUsers with filters, limitations and offseted", async (done) => {
   request(app)
     .post("/graphql")
     .send({

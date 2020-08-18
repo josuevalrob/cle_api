@@ -1,7 +1,7 @@
 import userResolver from './users/user.resolver'
-import guestResolver from './guest.resolver'
-import turnResolver from './turno.resolver'
-import campingResolver from './camping.resolver'
+import guestResolver from './guest/guest.resolver'
+import turnResolver from './turno/turno.resolver'
+import campingResolver from './camping/camping.resolver'
 // import {clientResolver} from './clientes.resolver'
 import {merge} from 'lodash'
 

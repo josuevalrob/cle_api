@@ -1,41 +1,8 @@
-import CampingModel from './../models/camping.model'
-import {GuestModel} from './../models/guest.model'
-import sendMail from './../helpers/mail.helper'
-import {secure} from './../middlewares/secure.mid'
+import CampingModel from './../../models/camping.model'
+import {GuestModel} from './../../models/guest.model'
+import sendMail from './../../helpers/mail.helper'
+import {secure} from './../../middlewares/secure.mid'
 const turno = {path:'turno',populate: ['owner', 'team.user']}
-const Query = {
-	getCamping: secure( (_, {id}, context) =>
-		new Promise((resolve, reject) =>
-		 	CampingModel
-        .findById(id)
-        .populate(turno)
-        .populate('guest')
-        .populate('patreon')
-        .populate('owner')
-				.then((turno, err) => {
-					if(err) reject(err)
-					else resolve(turno)
-				}
-			)
-		)
-	),
-	getCampings: secure( (_, {input, limit, offset}, context) =>
-		new Promise((resolve, reject) =>
-			CampingModel
-				.find(input)
-        .populate(turno)
-        .populate('guest')
-        .populate('patreon')
-        .populate('owner')
-        .limit(limit).skip(offset)
-				.then((turno, err) => {
-					if(err) reject(err)
-					else resolve(turno)
-				}
-			)
-		)
-	)
-}
 
 const Mutation = {
 	createCamping: secure(async (root, {input}, context) => {
@@ -109,4 +76,4 @@ const Mutation = {
 	})
 }
 
-export default {Query, Mutation}
+export default Mutation

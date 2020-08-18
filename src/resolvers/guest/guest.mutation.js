@@ -1,51 +1,10 @@
-import {GuestModel} from './../models/guest.model'
-import CampingModel from './../models/camping.model'
-import sendMail from './../helpers/mail.helper'
-import {destructureUser} from './users/user.mutations'
-import {secure} from './../middlewares/secure.mid'
-import { newGuestRequest, guestApproved, assignManager } from "./../templates";
-const Query = {
-	getGuest: secure((parent, {id}, context) =>
-		new Promise((resolve, reject) =>
-			GuestModel
-				.findById(id)
-				.populate('owner')
-				.then((guest, err) => {
-					if(err) reject(err)
-					else resolve(guest)
-				}
-			)
-		)
-	),
-	getGuests: secure((root, {input, limit, offset}) => 
-		new Promise((resolve, reject) =>
-			GuestModel
-				.find(input)
-				.populate('owner')
-				.limit(limit)
-				.skip(offset)
-				.then((guest, err) => {
-					if(err) reject(err)
-					else resolve(guest)
-				}
-			)
-		)
-	),
-	getMyGuests: secure((root, {limit, offset}, context) =>
-		new Promise((resolve, reject) =>
-			GuestModel
-				.find({owner: context.req.user.id})
-				.populate('owner')
-				.limit(limit)
-				.skip(offset)
-				.then((guest, err) => {
-					if(err) reject(err)
-					else resolve(guest)
-				}
-			)
-		)
-	),
-}
+import {GuestModel} from './../../models/guest.model'
+import CampingModel from './../../models/camping.model'
+import sendMail from './../../helpers/mail.helper'
+import {destructureUser} from './../users/user.mutations'
+import {secure} from './../../middlewares/secure.mid'
+import { newGuestRequest, guestApproved, assignManager } from "./../../templates";
+
 const Mutation = {
 	createGuest : async (root, {input}, context) => {
 		console.log('preparint to save 💽...', input.email )
@@ -137,7 +96,7 @@ const Mutation = {
 	}),
 }
 
-export default {Query, Mutation}
+export default Mutation
 
 const sendMailAndUpdateStatus = async doc => {
 	const {accepted} = await sendMail(doc.email, guestApproved(doc)).catch(console.error)

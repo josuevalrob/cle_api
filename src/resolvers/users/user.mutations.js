@@ -21,8 +21,9 @@ export const destructureUser = (input) => ({
 
 const Mutation =  {
   //* just for admin
+  //! really? why do we have this? maybe it should be deleted!!
   signup : async (root, {input}, context) => {
-    console.log('📩 ', input.email)
+    console.log('📩 ', input.email) 
     const existUser = await context.User.findOne({email:input.email})
     if (existUser) throw new Error ('🙅🏻‍♂️ 📫 Email already registered')
     const newUser = new context.User(destructureUser(input))
@@ -50,14 +51,14 @@ const Mutation =  {
   }, true, true), //sudo and admin has access.
   deleteUser : secure(async (root, {id}, context) => {
     console.log('💀 ', id)
-    const {user} = context.req
-    const condemn = await userFindById(id)
-    const guest = await GuestModel.findOne({email: condemn.email})
-    const {owner, isProtected} = guest
-    console.log(guest)
+    const {user} = context.req;
+    const condemn = await userFindById(id);
+    const guest = await GuestModel.findOne({email: condemn.email});
+    const {owner, isProtected} = guest;
+    console.log(guest);
     const canDie = isProtected
       ? owner == user.id || user.rol == 'sudo'
-      : user.rol == 'admin' || user.rol == 'sudo'
+      : user.rol == 'admin' || user.rol == 'sudo';
     return canDie
       ? new Promise ((resolve, rejects) =>
           condemn.remove(error => error //callback
@@ -65,7 +66,7 @@ const Mutation =  {
               : resolve((async () => {
                   guest.status = 'DELETED'
                   const updateStatus = await guest.save()
-                  return !!updateStatus 
+                  return !!updateStatus
                     ? "Se elimino correctamente"
                     : rejects('Ha ocurrido un problema actualizando el guest')
                 })())
