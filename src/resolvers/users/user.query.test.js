@@ -13,6 +13,7 @@ test("fetch all fields of first user", async (done) => {
   request(app)
     .post("/graphql")
     .send({
+      // ! DO NOT USE STATIC VALUES!!
       query: `
         { getUser(id:"5e7a36631580870017b297ce") { ${getUserFields()} } }
       `,
@@ -30,7 +31,7 @@ test("fetch all fields of first user", async (done) => {
     });
 });
 // * getUsers
-test("fetch firstName in getUsers array", async (done) => {
+test("fetch all users array", async (done) => {
   request(app)
     .post("/graphql")
     .send({query: `{ getUsers { ${getUserFields()} } }`})

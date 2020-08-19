@@ -80,7 +80,7 @@ type Mutation {
 	# 📬 expect a user input, with at least, first name and password. Never Update the email
 	# 🕵️‍♂️ return a user type including email field
 	updateUser(input:UserUpdate) : UserUpdated
-	# 👮‍♂️ protected route. 
+	# 👮‍♂️ protected route.
 	# 🔏 accesible for admin or super user
 	# 📬 expect the user id to find it and delete it
 	# 🕵️‍♂️ return a String confirmation

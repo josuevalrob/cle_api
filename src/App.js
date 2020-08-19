@@ -21,10 +21,10 @@ import authRoutes from './routes/auth.routes'
 import {typeDefs} from './schema/typeDef'
 import resolvers from './resolvers'
 //party 🎉
-connectDB()
-const app = express()
-app.use(cors)
-app.use(express.urlencoded({extended: true}))
+connectDB();
+const app = express();
+app.use(cors);
+app.use(express.urlencoded({extended: true}));
 
 //Express session: 🎟 It provides the functionality to save session data in a storage that you choose
 app.use(session({
@@ -38,14 +38,13 @@ app.use(session({
 }));
 
 // 👮🏻‍🚔 passport init
-app.use(passport.initialize())
+app.use(passport.initialize());
 app.use(passport.session());
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req, res }) => {
-    // if(req.user) console.log(`🏃‍♀️ ${req.user ? req.user.email : '🙅🏻‍♂️'}`)
     return buildContext({ req, res, User })
   },
   playground: {
@@ -53,7 +52,7 @@ const server = new ApolloServer({
       'request.credentials': 'same-origin',
     },
   },
-})
+});
 
 app.use('/', rootPath) //maybe i dont need this...
 app.use('/auth', authRoutes)

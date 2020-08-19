@@ -4,7 +4,7 @@ import { GraphQLLocalStrategy } from 'graphql-passport';
 import {OAuth2Strategy} from 'passport-google-oauth'
 
 passport.serializeUser((user, next) => {
-	console.log(user.id, ' 🔏')
+	// console.log(user.id, ' 🔏')
   next(null, user.id);
 });
 
@@ -16,7 +16,7 @@ passport.deserializeUser((id, next) => {
 
 passport.use(
 	new GraphQLLocalStrategy((email, password, next) => {
-		console.log(`🎫 GraphQLLocalStrategy ${email} 🚔  👮‍♂`)
+		// console.log(`🎫  GraphQLLocalStrategy ${email} 🚔  👮‍♂`)
 		User.findOne({ email })
 			.then(user => !user
 				? next(null, false, 'Invalid email or password')
