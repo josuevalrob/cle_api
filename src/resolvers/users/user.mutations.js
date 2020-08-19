@@ -57,8 +57,7 @@ const Mutation =  {
     const {user} = context.req;
     const condemn = await userFindById(id);
     const guest = await GuestModel.findOne({email: condemn.email});
-    const {owner, isProtected} = guest;
-    console.log(guest);
+    const {owner, isProtected} = guest || {};
     const canDie = !!guest && isProtected
       ? owner == user.id || user.rol == 'sudo'
       : user.rol == 'admin' || user.rol == 'sudo';
