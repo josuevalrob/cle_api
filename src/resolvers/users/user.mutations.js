@@ -33,6 +33,7 @@ const Mutation =  {
     await context.login(userSaved);
     return {user: newUser}
   },
+
   login : async (root, {email, password}, context) => {
     const { user } = await context.authenticate('graphql-local', { email, password });
     if (!user) throw new Error ('🙅🏻‍♂️ There was a problem with the user o the password 🛂')
@@ -45,10 +46,12 @@ const Mutation =  {
     console.log(input)
     const {user} = context.req
     Object.assign(user, input);
+    // ! all the validation shoudn´t be in the mongoose side!!
     const userSaved = await user.save();
     if(!userSaved) throw new Error ('💽 there was a problem saving the user')
     return user
   }, true, true), //sudo and admin has access.
+
   deleteUser : secure(async (root, {id}, context) => {
     console.log('💀 ', id)
     const {user} = context.req;
@@ -56,9 +59,10 @@ const Mutation =  {
     const guest = await GuestModel.findOne({email: condemn.email});
     const {owner, isProtected} = guest;
     console.log(guest);
-    const canDie = isProtected
+    const canDie = !!guest && isProtected
       ? owner == user.id || user.rol == 'sudo'
       : user.rol == 'admin' || user.rol == 'sudo';
+
     return canDie
       ? new Promise ((resolve, rejects) =>
           condemn.remove(error => error //callback
