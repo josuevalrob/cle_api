@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../App'
 import {stopDatabase} from '../../configs/bd.config';
-import {checkFields} from '../../tests/utils'
+import {checkFields, adminLogin} from '../../tests/utils'
 import {TurnoInput} from './turno.resolver';
 
 afterAll(async () => {
@@ -9,7 +9,8 @@ afterAll(async () => {
 });
 
 test("fetch all Turnos", async (done) => {
-  const agent = request(app);
+  const agent = request.agent(app);
+  await adminLogin(agent);
   agent
     .post("/graphql")
     .send({query: `{

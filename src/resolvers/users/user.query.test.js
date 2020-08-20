@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../../App'
 import {stopDatabase} from '../../configs/bd.config';
 import {UserFields, getUserFields} from './user.resolver';
-import {checkFields} from './../../tests/utils'
+import {checkFields, patreonLogin} from './../../tests/utils'
 
 
 afterAll(async () => {
@@ -10,13 +10,12 @@ afterAll(async () => {
 });
 // * getUser
 test("fetch all fields of first user", async (done) => {
-  request(app)
+  const agent = request.agent(app);
+  const user = await patreonLogin(agent);
+  agent
     .post("/graphql")
     .send({
-      // ! DO NOT USE STATIC VALUES!!
-      query: `
-        { getUser(id:"5e7a36631580870017b297ce") { ${getUserFields()} } }
-      `,
+      query: `{ getUser(id:"${user.id}") { ${getUserFields()} } }`,
     })
     .set("Accept", "application/json")
     .expect("Content-Type", /json/)
@@ -32,7 +31,9 @@ test("fetch all fields of first user", async (done) => {
 });
 // * getUsers
 test("fetch all users array", async (done) => {
-  request(app)
+  const agent = request.agent(app);
+  await patreonLogin(agent);
+  agent
     .post("/graphql")
     .send({query: `{ getUsers { ${getUserFields()} } }`})
     .set("Accept", "application/json")
@@ -49,7 +50,9 @@ test("fetch all users array", async (done) => {
 });
 // * getUsers
 test("fetch getUsers with filters, limitations and offseted", async (done) => {
-  request(app)
+  const agent = request.agent(app);
+  await patreonLogin(agent);
+  agent
     .post("/graphql")
     .send({
       query: `{

@@ -1,18 +1,15 @@
 import request from 'supertest';
-import faker from 'faker'
+import faker from 'faker';
 import app from '../../App'
 import {stopDatabase} from '../../configs/bd.config';
 import {UserFields, getUserFields} from './user.resolver';
-import {checkFields} from './../../tests/utils'
+import {checkFields, loginQuery} from './../../tests/utils'
 import User from '../../models/user.model';
 import {NO_PERMISSIONS_DELETE, DELETED_BUT_NOT_GUEST_UPDATED, ALREADY_REGISTER} from './user.mutations'
 
 const email = faker.internet.email();
 const name = faker.name.firstName();
-const loginQuery = (loginEmail, password = '123') => `
-login( email: "${loginEmail}" password: "${password}") {
-  user { ${getUserFields()} }
-}`
+
 afterAll(async () => {
   await User.findOneAndDelete({email}).exec();//should be deleted by the test
   await stopDatabase();

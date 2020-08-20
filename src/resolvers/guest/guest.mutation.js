@@ -1,16 +1,16 @@
 import {GuestModel} from './../../models/guest.model'
 import CampingModel from './../../models/camping.model'
 import sendMail from './../../helpers/mail.helper'
-import {destructureUser} from './../users/user.mutations'
+import {destructureUser, ALREADY_REGISTER} from './../users/user.mutations'
 import {secure} from './../../middlewares/secure.mid'
 import { newGuestRequest, guestApproved, assignManager } from "./../../templates";
 
 const Mutation = {
 	createGuest : async (root, {input}, context) => {
-		console.log('preparint to save 💽...', input.email )
+		// console.log('preparint to save 💽...', input.email )
 		const existUser = await context.User.findOne({email:input.email})
 		const existGuest = await GuestModel.findOne({email:input.email})
-		if (existUser || existGuest) throw new Error ('🙅🏻‍♂️ 📫 Email already in use')
+		if (existUser || existGuest) throw new Error (ALREADY_REGISTER)
 		const newGuest = new GuestModel({
 			...(!!context.req && !!context.req.user && { owner: context.req.user.id}),
 			firstName: input.firstName,
@@ -22,9 +22,10 @@ const Mutation = {
 		})
 		newGuest.id = newGuest._id
 		return new Promise (( resolve, reject ) => {
-			return newGuest.save(err => {
-				if(err) reject(err)
-				else resolve(sendMailToAdmin(newGuest))
+			return newGuest.save(async err => {
+				if (err) reject(err);
+				const fullGuest = await  newGuest.populate('owner').execPopulate()
+				resolve(sendMailToAdmin(fullGuest))
 			})
 		})
 	},
@@ -67,7 +68,7 @@ const Mutation = {
 		if(!guest) throw new Error (`Guest not found`)
 		guest.status = status
 		await guest.save()
-		return guest
+		return await guest.populate('owner').execPopulate()
 	}),
 	updateGuest : secure(async(_, {input}, context) => {
 		const guest = await GuestModel.findById(input.id)
@@ -76,7 +77,7 @@ const Mutation = {
 		return new Promise (( resolve, reject ) =>
 			guest.save(async err => {
 				if(!!err) return reject(err)
-				const guestAndOwner = await guest.populate('owner').execPopulate()
+				const guestAndOwner = await guest.populate('owner').execPopulate();
 				if(input.owner == guest.owner._id) return resolve(guestAndOwner)
 				// * if they are not the same, let's notify to the new owner/manager
 				return resolve(notifyNewManager(guestAndOwner))
@@ -117,7 +118,7 @@ const sendMailToAdmin = async doc => {
 	return doc
 }
 const notifyNewManager = async guest => {
-	console.log(`📮 notify manager ${guest.owner.email}`)
+	// console.log(`📮 notify manager ${guest.owner.email}`)
 	await sendMail(
 			guest.owner.email, //email goes to the general admin
 			assignManager(guest)

@@ -2,11 +2,11 @@ export const newGuestRequest = ({firstName, letter, email}) => /*html*/
 `
   <b> Hello SuperAdmin! </b>
   <br>
-  Hemos recibido un correo por parte de ${doc.firstName} solicitando lo siguiente
-  ${doc.letter}.
+  Hemos recibido un correo por parte de ${firstName} solicitando lo siguiente
+  ${letter}.
   <br>
   Hemos creado en tu perfil de administrador el perfil del invitado bajo este correo
-  electrónico: ${doc.email}, si consideras puedes acceder a la plataforma en el
+  electrónico: ${email}, si consideras puedes acceder a la plataforma en el
   apartado de invitados y completar su perfil para poder enviarle una invtación para la 
   cuenta de Patreon.
 `
@@ -20,14 +20,14 @@ export const guestApproved = ({id}) => /*html*/
   </p>
 `
 
-export const assignManager = ({id, firstName, email, owner}) => /*html*/
+export const assignManager = ({id, firstName, email, owner, letter}) => /*html*/
 `
   <b> 👋 Hola, qué tal ${owner.firstName}! </b>
   <br>
   Te hemos asignado un nuevo invitado, ${firstName}
   <br>
   <p>Previamente nos envió una carta con la siguiente información:</p>
-  <p>${doc.letter}.</p>
+  <p>${letter}.</p>
   <br>
   <p>
     Ahora te corresponde a ti, hacer un siguimiento de este usuario, y

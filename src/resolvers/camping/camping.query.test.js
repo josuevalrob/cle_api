@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../App'
-import {checkFields} from '../../tests/utils'
+import {adminLogin} from '../../tests/utils'
 import {stopDatabase} from '../../configs/bd.config';
 import {CampingTypes} from './camping.resolver';
 import {TurnoInput} from '../turno/turno.resolver';
@@ -11,7 +11,8 @@ afterAll(async () => {
 });
 
 test("fetch all Guests from all turnos", async (done) => {
-  const agent = request(app);
+  const agent = request.agent(app);
+  await adminLogin(agent);
   agent.post("/graphql").send({
     query: `{ getTurnos { id } }` //* return all id from all turnos
   }).set("Accept", "application/json")
