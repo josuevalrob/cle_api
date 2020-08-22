@@ -18,5 +18,6 @@ export const getGuestInputs = () =>`
       ${getUserFields()}
     }
 `
+export const GUEST_NOT_SEND = 'GUEST_NOT_SEND'
 
 export default {Query, Mutation};

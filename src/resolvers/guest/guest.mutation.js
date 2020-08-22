@@ -1,10 +1,10 @@
 import {GuestModel} from './../../models/guest.model'
 import CampingModel from './../../models/camping.model'
 import sendMail from './../../helpers/mail.helper'
-import {destructureUser, ALREADY_REGISTER} from './../users/user.mutations'
+import {destructureUser, ALREADY_REGISTER, SUCCESS_DELETED} from './../users/user.mutations'
 import {secure} from './../../middlewares/secure.mid'
 import { newGuestRequest, guestApproved, assignManager } from "./../../templates";
-
+import {GUEST_NOT_SEND} from './guest.resolver'
 const Mutation = {
 	createGuest : async (root, {input}, context) => {
 		// console.log('preparint to save 💽...', input.email )
@@ -29,14 +29,14 @@ const Mutation = {
 			})
 		})
 	},
-	sendGuest : secure(async (root, {id, letter}, context) => {
+	sendGuest : secure(async (root, {id, letter }, context) => {
 		const guest = await GuestModel.findById(id)
-		if (!guest) throw new Error (`Guest ${email} doesn´t exist, please, create it first`)
+		if (!guest) throw new Error (`Guest doesn´t exist, please, create it first`)
 		guest.letter = letter
 		// console.log('Ready to send mail to 📮 ', guest.firstName)
 		return new Promise (( resolve, reject ) => {
 			return guest.isProtected && guest.owner != context.req.user.id
-				? reject(`${email} is isProtected, and is not your user. `)
+				? reject(`${guest.email} is isProtected, and is not your user. `)
 				: resolve(sendMailAndUpdateStatus(guest))
 		})
 	}),
@@ -47,7 +47,7 @@ const Mutation = {
 		//? can I extract this?
 		if (!guest) throw new Error (`Sorry ${input.email} is not in our list`)
 		if( guest.id !== key) throw new Error (`Sorry, this access is restricted by url. Please access with the email link`)
-		if(guest.status !== 'SEND') throw new Error (`Hey, what r u doing here?. This accound is not ready yet`)
+		if(guest.status !== 'SEND') throw new Error (GUEST_NOT_SEND)
 	 	guest.status = 'ACCEPTED' //should I remove the collection?.
 		const newUser = new context.User(destructureUser({...input, ...guest}))
 		//? from here, we can call the save user in the user.resolver
@@ -68,7 +68,7 @@ const Mutation = {
 		if(!guest) throw new Error (`Guest not found`)
 		guest.status = status
 		await guest.save()
-		return await guest.populate('owner').execPopulate()
+		return await guest.populate('owner').execPopulate();
 	}),
 	updateGuest : secure(async(_, {input}, context) => {
 		const guest = await GuestModel.findById(input.id)
@@ -85,13 +85,13 @@ const Mutation = {
 		)
 	}),
 	deleteGuest : secure((root, {id}) => {
-		console.log('💀 Killing guest',id)
+		// console.log('💀 Killing guest',id)
 		return new Promise ((resolve, object) =>
 				GuestModel.findOneAndRemove(
 					{_id : id} ,
 					(error, guest) => error //callback
 						? rejects(error)
-						: resolve("Se elimino correctamente")
+						: resolve(SUCCESS_DELETED)
 				)
 		)
 	}),
@@ -99,13 +99,18 @@ const Mutation = {
 
 export default Mutation
 
+
+// ! THIS FUNCTIONS SHOULD NOT MODIFY THE DOC!
+//  It should be done in the mutation.
 const sendMailAndUpdateStatus = async doc => {
 	const {accepted} = await sendMail(doc.email, guestApproved(doc)).catch(console.error)
 	doc.status = accepted.includes(doc.email) ? 'SEND' : 'STANDBY'
 	return new Promise ((resolve, reject) => {
 		return doc.save(err => {
 			if(err) reject(err)
-			else resolve(doc)
+			else resolve(
+				doc.populate('owner').execPopulate()
+			)
 		})
 	})
 }
