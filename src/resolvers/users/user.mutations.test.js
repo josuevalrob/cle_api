@@ -5,7 +5,7 @@ import {stopDatabase} from '../../configs/bd.config';
 import {UserFields, getUserFields} from './user.resolver';
 import {checkFields, loginQuery} from './../../tests/utils'
 import User from '../../models/user.model';
-import {NO_PERMISSIONS_DELETE, DELETED_BUT_NOT_GUEST_UPDATED, ALREADY_REGISTER} from './user.mutations'
+import {NO_PERMISSIONS_DELETE, DELETED_BUT_NOT_GUEST_UPDATED, ALREADY_REGISTER} from './user.resolver'
 
 const email = faker.internet.email();
 const name = faker.name.firstName();

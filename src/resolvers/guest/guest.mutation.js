@@ -1,10 +1,12 @@
 import {GuestModel} from './../../models/guest.model'
 import CampingModel from './../../models/camping.model'
 import sendMail from './../../helpers/mail.helper'
-import {destructureUser, ALREADY_REGISTER, SUCCESS_DELETED} from './../users/user.mutations'
+import {destructureUser } from './../users/user.mutations'
 import {secure} from './../../middlewares/secure.mid'
 import { newGuestRequest, guestApproved, assignManager } from "./../../templates";
 import {GUEST_NOT_SEND} from './guest.resolver'
+import {ALREADY_REGISTER, SUCCESS_DELETED} from  './../users/user.resolver';
+
 const Mutation = {
 	createGuest : async (root, {input}, context) => {
 		// console.log('preparint to save 💽...', input.email )
@@ -42,7 +44,7 @@ const Mutation = {
 	}),
 	// TODO update guest status!!
 	signupGuest : async (root, {input, key}, context) => { //final part of the guest process
-		console.log('📩 ', input.email)
+		// console.log('📩 ', input.email)
 		const guest = await GuestModel.findOne({email:input.email})
 		//? can I extract this?
 		if (!guest) throw new Error (`Sorry ${input.email} is not in our list`)
@@ -53,7 +55,7 @@ const Mutation = {
 		//? from here, we can call the save user in the user.resolver
 		const userSaved = await newUser.save(guest.save());
 		if(!userSaved) throw new Error ('💽 there was a problem saving the user')
-		console.log('User Created 📬 📪 📭', userSaved)
+		// console.log('User Created 📬 📪 📭', userSaved)
 
 		// * once the user is created we need to find and update all the turns relateds.
 		console.log("let's update the related turn & campings 🏕")

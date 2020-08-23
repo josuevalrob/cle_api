@@ -2,6 +2,7 @@ import {modelFinderById} from './user.queries';
 import User from '../../models/user.model';
 import {secure, isOwner} from './../../middlewares/secure.mid';
 import {GuestModel} from './../../models/guest.model';
+import {ALREADY_REGISTER ,NO_PERMISSIONS_DELETE ,DELETED_BUT_NOT_GUEST_UPDATED ,GUEST_UPDATE_ERROR ,USER_OR_PASSWORD_PROBLEM ,SUCCESS_DELETED} from './user.resolver';
 
 const userFindById = modelFinderById(User)
 //TODO: use the UserFields from queryTest file
@@ -84,11 +85,5 @@ const Mutation =  {
     // const creator = await userFindById(owner)
   })
 }
-export const ALREADY_REGISTER = 'ALREADY_REGISTER';
-export const NO_PERMISSIONS_DELETE = 'NO_PERMISSIONS_DELETE';
-export const DELETED_BUT_NOT_GUEST_UPDATED = 'DELETED_BUT_NOT_GUEST_UPDATED';
-export const GUEST_UPDATE_ERROR = 'GUEST_UPDATE_ERROR';
-export const USER_OR_PASSWORD_PROBLEM = 'USER_OR_PASSWORD_PROBLEM';
-export const SUCCESS_DELETED = 'SUCCESS_DELETED';
 
 export default Mutation

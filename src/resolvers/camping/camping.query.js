@@ -1,6 +1,6 @@
 import CampingModel from './../../models/camping.model';
 import {secure} from './../../middlewares/secure.mid';
-const turno = {path:'turno',populate: ['owner', 'team.user']}
+export const turno = {path:'turno',populate: ['owner', 'team.user']}
 const Query = {
 	getCamping: secure( (_, {id}, context) =>
 		new Promise((resolve, reject) =>
