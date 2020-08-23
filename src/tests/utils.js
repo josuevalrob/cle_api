@@ -35,3 +35,13 @@ export const testGuest = (guest) => {
   UserFields.map(checkFields(guest.owner));
   return guest;
 }
+
+
+export const checkCamping = (id) => (camping) => {
+  const {turno, owner, patreon, guest} = camping
+  expect(turno.id).toBe(id)
+  UserFields.map(checkFields(owner));
+  !!patreon && UserFields.map(checkFields(patreon));
+  !!guest && guest.map(testGuest);
+  return camping;
+}

@@ -6,5 +6,9 @@ export const TurnoInput =[
   "name",
   "description",
   "nightPrice",
-] 
+];
+
+export const getTurnoInput = () => `
+  ${TurnoInput.join(' ')}
+`;
 export default {Query, Mutation};

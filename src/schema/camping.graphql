@@ -24,7 +24,7 @@ input CampingInput {
   turno: ID!
   # email of the user who is gonna buy the turn
   patreonEmail: String!
-  # first name of the user who is gonna by the turn
+  # first name of the user who is gonna be in the turn
   firstName: String!
   # data of the current camping
   basicData: CampingProfileInput
