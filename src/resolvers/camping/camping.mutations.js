@@ -1,8 +1,10 @@
 import CampingModel from './../../models/camping.model'
 import {GuestModel} from './../../models/guest.model'
 import sendMail from './../../helpers/mail.helper'
+import {invToCamping} from './../../templates'
 import {secure} from './../../middlewares/secure.mid'
-const turno = {path:'turno',populate: ['owner', 'team.user']}
+const turnoQuery = {path:'turno', populate: ['owner', 'team.user']}
+const guestQuery = {path:'guest', populate: ['owner']}
 
 const Mutation = {
 	createCamping: secure(async (root, {input}, context) => {
@@ -18,7 +20,7 @@ const Mutation = {
 				// ! i cant, cus i dont have all the required inputs.
 				throw new Error('You need a patreon or a guest to proceed')
       }
-    }
+		}
     // we have a patreon!
     const camping = new CampingModel({
       ...input,
@@ -27,19 +29,21 @@ const Mutation = {
       owner: context.req.user.id,
     })
     camping.id = camping._id
-    console.log('🏕 ', camping)
+    // console.log('🏕 ', camping)
     return new Promise (( resolve, reject ) =>
       camping.save(async (err) => {
 				if(!!err) reject(err)
         const fullCamping = await camping
-																	.populate(turno)
-																	.populate('guest')
+																	.populate(turnoQuery)
+																	.populate(guestQuery)
 																	.populate('patreon')
 																	.populate('owner')
-																	.execPopulate()
+																	.execPopulate();
 				//* sending email to the patreon.
 				const {accepted} = await sendMail(fullCamping.patreon.email, invToCamping(fullCamping)).catch(console.error)
-				console.log(accepted.includes(doc.email) ? `email send to ${fullCamping.patreon.email}` : '🙅🏻‍♂️ there was an error sending email')
+				console.log(accepted.includes(fullCamping.patreon.email)
+					? `email send to ${fullCamping.patreon.email}`
+					: '🙅🏻‍♂️ there was an error sending email')
 				resolve(fullCamping)
       })
     )
@@ -54,8 +58,8 @@ const Mutation = {
 					? rejects(error)
 					: resolve(
 							camping
-                .populate(turno)
-                .populate('guest')
+								.populate(turnoQuery)
+								.populate(guestQuery)
                 .populate('patreon')
                 .populate('owner')
 							.execPopulate()
