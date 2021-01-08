@@ -38,14 +38,16 @@ const Mutation =  {
   login : async (root, {email, password}, context) => {
     const { user } = await context.authenticate('graphql-local', { email, password });
     if (!user) throw new Error (USER_OR_PASSWORD_PROBLEM)
-    context.login(user); //🎫
+    await context.login(user); //🎫
+    console.log('💃 ', context.req.user)
     return { user }
   },
+
   logout: (root, {email, password}, context) => context.logout(),
 
   updateUser: isOwner(async (root, {input}, context) => {
-    // console.log(input)
-    const {user} = context.req
+    console.log('💃 ', input);
+    const {user} = context.getUser();
     Object.assign(user, input);
     // ! all the validation shoudn´t be in the mongoose side!!
     // ? isOwner wrapper has all the logic (?)

@@ -25,7 +25,7 @@ const userSchema = new Schema({
     required: [true, 'we need a password'],
     minlength: 3 //? validate
   },
-  firstName:{
+  firstName: {
     type:String,
     required: [true, 'give me your name, at least 3 letters'],
     minlength: 3

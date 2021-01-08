@@ -40,8 +40,8 @@ export function secureUserOnly (func, userId = 'userId') {
 export function isOwner (func, sudo = false, admin = false, patron =  false) {
 	return (root, args, context) => {
 		if(!args.input) 			 throw new UserInputError('We need the input key with the user')
-		if (!context.req.user) 		 throw new AuthenticationError('Unauthenticated')
-		const {id, rol} = context.req.user
+		if (!context.getUser()) 		 throw new AuthenticationError('Unauthenticated')
+		const {id, rol} = context.getUser();
 		const isMine = args.input.id == id
 		if( !isMine ) 	 throw new ForbiddenError('Protected by owner')
 		if(!isMine && admin && rol !== 'admin') throw new ForbiddenError('Protected by admin')
