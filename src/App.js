@@ -45,11 +45,12 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req, res }) => {
+    console.log('💰', req.user)
     return buildContext({ req, res, User })
   },
   playground: {
     settings: {
-      'request.credentials': 'same-origin',
+      'request.credentials': 'include',
     },
   },
 });
